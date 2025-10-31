@@ -36,7 +36,8 @@ body {
 
 /* Navbar */
 .navbar {
-    background: var(--bg-white);
+    background: #1d1d1f;
+    color: white;
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -51,10 +52,8 @@ body {
 }
 
 .nav-brand h2 {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
+    font-weight: 700;
 }
 
 .nav-menu {
@@ -65,13 +64,30 @@ body {
 
 .nav-menu a {
     text-decoration: none;
-    color: var(--text-dark);
+    color: rgba(255, 255, 255, 0.8);
     font-weight: 500;
     transition: color 0.3s;
+    position: relative;
+    padding-bottom: 0.25rem;
 }
 
 .nav-menu a:hover {
-    color: var(--primary-color);
+    color: white;
+}
+
+.nav-menu a.active,
+.nav-menu a:hover {
+    color: white;
+}
+
+.nav-menu a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: white;
 }
 
 .btn-primary {
@@ -121,7 +137,7 @@ body {
 .hamburger span {
     width: 25px;
     height: 3px;
-    background: var(--text-dark);
+    background: white;
     border-radius: 2px;
     transition: all 0.3s;
 }
@@ -280,10 +296,203 @@ body {
     line-height: 1.7;
 }
 
+/* Mais Vendidos Section */
+.best-sellers {
+    padding: 4rem 0;
+    background: var(--bg-white);
+}
+
+.best-sellers-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 2rem;
+    padding: 0 20px;
+}
+
+.carousel-container {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 2rem;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-white);
+    border: 2px solid var(--border-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    transition: all 0.3s;
+    box-shadow: var(--shadow-md);
+}
+
+.carousel-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn-prev {
+    left: -25px;
+}
+
+.carousel-btn-next {
+    right: -25px;
+}
+
+.product-carousel-card {
+    min-width: 280px;
+    max-width: 280px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.product-carousel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.product-image-container {
+    width: 100%;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+.product-carousel-card:hover .product-image-container img {
+    transform: scale(1.05);
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #84cc16;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 5;
+}
+
+.product-name-carousel {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    min-height: 2.8rem;
+}
+
+.product-rating {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 0.75rem;
+}
+
+.star {
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
+.star.filled {
+    color: #fbbf24;
+}
+
+.product-price-carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.price-old-carousel {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    text-decoration: line-through;
+}
+
+.price-new-carousel {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.product-installment-carousel {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    padding: 0;
+}
+
+.carousel-dot.active {
+    background: var(--primary-color);
+    width: 30px;
+    border-radius: 5px;
+}
+
 /* Products Section */
 .products {
     padding: 5rem 0;
-    background: var(--bg-white);
+    background: var(--bg-light);
 }
 
 .products-grid {
@@ -591,9 +800,48 @@ body {
 }
 
 /* Responsive Design */
+/* Responsivo Carrossel */
+@media (max-width: 1200px) {
+    .carousel-track {
+        gap: 1.5rem;
+    }
+    
+    .product-carousel-card {
+        min-width: 250px;
+        max-width: 250px;
+    }
+}
+
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
+    }
+    
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+    
+    .carousel-btn-prev {
+        left: -20px;
+    }
+    
+    .carousel-btn-next {
+        right: -20px;
+    }
+    
+    .product-carousel-card {
+        min-width: 220px;
+        max-width: 220px;
+    }
+    
+    .best-sellers-title {
+        font-size: 2rem;
+    }
+    
+    .carousel-container {
+        padding: 0 60px;
     }
 
     .nav-menu {
@@ -601,12 +849,17 @@ body {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background: var(--bg-white);
+        background: #1d1d1f;
         width: 100%;
         text-align: center;
         transition: 0.3s;
         box-shadow: var(--shadow-lg);
         padding: 2rem 0;
+    }
+    
+    .nav-menu a {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 1rem;
     }
 
     .nav-menu.active {
@@ -658,6 +911,19 @@ body {
     .hero-title {
         font-size: 2rem;
     }
+    
+    .carousel-btn {
+        display: none;
+    }
+    
+    .carousel-container {
+        padding: 0 20px;
+    }
+    
+    .product-carousel-card {
+        min-width: 200px;
+        max-width: 200px;
+    }
 
     .hero-description {
         font-size: 1rem;
@@ -693,4 +959,5 @@ html {
 .service-card {
     animation: fadeInUp 0.6s ease-out;
 }
+
 

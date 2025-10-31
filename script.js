@@ -542,5 +542,165 @@ document.querySelectorAll('.review-card').forEach(card => {
     observer.observe(card);
 });
 
+// ============ CARROSSEL MAIS VENDIDOS ============
+let currentCarouselIndex = 0;
+const itemsPerView = 4;
+
+function inicializarCarrossel() {
+    const track = document.getElementById('carouselTrack');
+    const dots = document.getElementById('carouselDots');
+    
+    if (!track || !maisVendidos) return;
+    
+    // Limpar conteúdo
+    track.innerHTML = '';
+    dots.innerHTML = '';
+    
+    // Criar cards dos produtos
+    maisVendidos.forEach((produto, index) => {
+        const card = criarCardProduto(produto, index);
+        track.appendChild(card);
+    });
+    
+    // Criar dots de navegação
+    const totalSlides = Math.ceil(maisVendidos.length / itemsPerView);
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => irParaSlide(i);
+        dots.appendChild(dot);
+    }
+    
+    atualizarCarrossel();
+}
+
+function criarCardProduto(produto, index) {
+    const card = document.createElement('div');
+    card.className = 'product-carousel-card';
+    card.onclick = () => {
+        // Preencher formulário com este produto
+        document.getElementById('tipoProduto').value = 'iphone';
+        atualizarSelecoesProduto();
+        setTimeout(() => {
+            document.getElementById('modeloProduto').value = produto.modelo;
+            atualizarCapacidadeECor();
+            setTimeout(() => {
+                document.getElementById('capacidadeProduto').value = produto.capacidade;
+                document.getElementById('corProduto').value = produto.cor;
+                calcularPrecoFinal();
+                document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }, 100);
+    };
+    
+    const starsHTML = gerarEstrelas(produto.avaliacao);
+    
+    card.innerHTML = `
+        <div class="product-image-container">
+            ${produto.desconto > 0 ? `<div class="discount-badge">-${produto.desconto}%</div>` : ''}
+            <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'280\\' height=\\'280\\'%3E%3Crect fill=\\'%23f5f5f7\\' width=\\'280\\' height=\\'280\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' text-anchor=\\'middle\\' dy=\\'.3em\\' fill=\\'%2386868b\\' font-size=\\'18\\'%3E📱 iPhone%3C/text%3E%3C/svg%3E'">
+        </div>
+        <div class="product-name-carousel">${produto.nome}</div>
+        <div class="product-rating">${starsHTML}</div>
+        <div class="product-price-carousel">
+            ${produto.precoOriginal > produto.precoAtual ? 
+                `<span class="price-old-carousel">R$ ${produto.precoOriginal.toLocaleString('pt-BR')}</span>` : ''}
+            <span class="price-new-carousel">R$ ${produto.precoAtual.toLocaleString('pt-BR')}</span>
+        </div>
+        <div class="product-installment-carousel">ou ${produto.parcelas}x de R$ ${produto.valorParcela.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+    `;
+    
+    return card;
+}
+
+function gerarEstrelas(avaliacao) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= avaliacao) {
+            html += '<span class="star filled">★</span>';
+        } else {
+            html += '<span class="star">☆</span>';
+        }
+    }
+    return html;
+}
+
+function moverCarrossel(direcao) {
+    const totalSlides = Math.ceil(maisVendidos.length / itemsPerView);
+    
+    if (direcao === 'next') {
+        currentCarouselIndex = (currentCarouselIndex + 1) % totalSlides;
+    } else {
+        currentCarouselIndex = (currentCarouselIndex - 1 + totalSlides) % totalSlides;
+    }
+    
+    atualizarCarrossel();
+}
+
+function irParaSlide(index) {
+    currentCarouselIndex = index;
+    atualizarCarrossel();
+}
+
+function atualizarCarrossel() {
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('.carousel-dot');
+    
+    if (!track) return;
+    
+    // Calcular posição baseado no card width + gap
+    const cardWidth = 280; // min-width do card
+    const gap = 32; // 2rem = 32px
+    const translateX = -(currentCarouselIndex * (cardWidth + gap) * itemsPerView);
+    track.style.transform = `translateX(${translateX}px)`;
+    
+    // Atualizar dots
+    dots.forEach((dot, index) => {
+        if (index === currentCarouselIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+// Inicializar carrossel quando a página carregar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        inicializarCarrossel();
+    });
+} else {
+    inicializarCarrossel();
+}
+
+// Suporte a touch/swipe no carrossel
+let touchStartX = 0;
+let touchEndX = 0;
+
+const carouselWrapper = document.querySelector('.carousel-wrapper');
+if (carouselWrapper) {
+    carouselWrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    carouselWrapper.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            moverCarrossel('next');
+        } else {
+            moverCarrossel('prev');
+        }
+    }
+}
+
 console.log('🍎 Unique Importados carregada com sucesso!');
 

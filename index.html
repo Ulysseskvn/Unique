@@ -19,9 +19,13 @@
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home">Início</a></li>
-                <li><a href="#produtos">Produtos</a></li>
-                <li><a href="#beneficios">Benefícios</a></li>
-                <li><a href="#contato">Contato</a></li>
+                <li><a href="#produtos">iPhone</a></li>
+                <li><a href="#produtos">Mac</a></li>
+                <li><a href="#produtos">iPad</a></li>
+                <li><a href="#produtos">Apple Watch</a></li>
+                <li><a href="#produtos">Áudio</a></li>
+                <li><a href="#produtos">Acessórios</a></li>
+                <li><a href="#produtos">Ofertas</a></li>
             </ul>
             <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView()">Comprar Agora</button>
             <div class="hamburger" id="hamburger">
@@ -71,6 +75,23 @@
                         <circle cx="200" cy="50" r="25" fill="#000"/>
                     </svg>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mais Vendidos Section -->
+    <section class="best-sellers">
+        <div class="container">
+            <h2 class="best-sellers-title">Mais Vendidos</h2>
+            <div class="carousel-container">
+                <button class="carousel-btn carousel-btn-prev" onclick="moverCarrossel('prev')">‹</button>
+                <div class="carousel-wrapper">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Produtos serão inseridos via JavaScript -->
+                    </div>
+                </div>
+                <button class="carousel-btn carousel-btn-next" onclick="moverCarrossel('next')">›</button>
+                <div class="carousel-dots" id="carouselDots"></div>
             </div>
         </div>
     </section>
@@ -320,6 +341,7 @@
     </footer>
 
     <script src="produtos.js"></script>
+    <script src="mais-vendidos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

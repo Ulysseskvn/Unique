@@ -22,10 +22,16 @@ app.use(express.static(rootDir));
 app.use(express.static(path.join(rootDir, 'public')));
 app.use(express.static(process.cwd()));
 
-// Servir produtos.js
+// Servir produtos.js e mais-vendidos.js
 app.get('/produtos.js', (req, res) => {
     res.sendFile(path.join(rootDir, 'produtos.js'), (err) => {
         if (err) res.sendFile(path.join(process.cwd(), 'produtos.js'));
+    });
+});
+
+app.get('/mais-vendidos.js', (req, res) => {
+    res.sendFile(path.join(rootDir, 'mais-vendidos.js'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'mais-vendidos.js'));
     });
 });
 
