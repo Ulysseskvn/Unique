@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Unique Importados - Catálogo de produtos Apple">
+    <title>Catálogo - Unique Importados</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .catalog-hero {
+            padding: 3rem 0 2rem;
+            background: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%);
+            text-align: center;
+        }
+        
+        .catalog-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .catalog-hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .catalog-filters {
+            padding: 2rem 0;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .catalog-filters .container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .filter-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+        
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+        
+        .catalog-product-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .catalog-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .catalog-product-image {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        
+        .catalog-product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .catalog-product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .catalog-product-specs {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .catalog-product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .catalog-no-products {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .catalog-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" style="text-decoration: none; color: inherit;"><h2>🍎 Unique Importados</h2></a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/">Início</a></li>
+                <li><a href="/catalogo.html?categoria=iphone">iPhone</a></li>
+                <li><a href="/catalogo.html?categoria=mac">Mac</a></li>
+                <li><a href="/catalogo.html?categoria=ipad">iPad</a></li>
+                <li><a href="/catalogo.html?categoria=applewatch">Apple Watch</a></li>
+                <li><a href="/catalogo.html?categoria=audio">Áudio</a></li>
+                <li><a href="/catalogo.html?categoria=acessorios">Acessórios</a></li>
+                <li><a href="/catalogo.html?categoria=ofertas">Ofertas</a></li>
+            </ul>
+            <button class="btn-primary" onclick="window.location.href='/'">Comprar Agora</button>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Catalog Hero -->
+    <section class="catalog-hero">
+        <div class="container">
+            <h1 id="catalogTitle">Catálogo</h1>
+            <p id="catalogSubtitle">Explore nossa seleção completa</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="catalog-filters" id="filtersSection" style="display: none;">
+        <div class="container">
+            <div class="filter-group">
+                <label>Modelo</label>
+                <select id="filterModelo" onchange="filtrarProdutos()">
+                    <option value="">Todos os modelos</option>
+                </select>
+            </div>
+            <div class="filter-group" id="filterCapacidadeGroup" style="display: none;">
+                <label>Capacidade</label>
+                <select id="filterCapacidade" onchange="filtrarProdutos()">
+                    <option value="">Todas as capacidades</option>
+                </select>
+            </div>
+            <div class="filter-group" id="filterCorGroup" style="display: none;">
+                <label>Cor</label>
+                <select id="filterCor" onchange="filtrarProdutos()">
+                    <option value="">Todas as cores</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products">
+        <div class="container">
+            <div class="catalog-grid" id="catalogGrid">
+                <!-- Produtos serão inseridos via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🍎 Unique Importados</h3>
+                    <p>Produtos Apple importados originais com os melhores preços do mercado.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/#produtos">Produtos</a></li>
+                        <li><a href="/#contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Email: contato@uniqueimportados.com.br</p>
+                    <p>WhatsApp: (11) 99999-9999</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Unique Importados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="produtos.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Configuração do catálogo
+        let categoriaAtual = '';
+        let produtosExibidos = [];
+        
+        // Obter categoria da URL
+        function obterCategoria() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('categoria') || 'iphone';
+        }
+        
+        // Títulos por categoria
+        const titulosCategoria = {
+            'iphone': { titulo: '📱 iPhone', subtitulo: 'A escolha perfeita para você' },
+            'mac': { titulo: '💻 Mac', subtitulo: 'Potência e performance' },
+            'ipad': { titulo: '📱 iPad', subtitulo: 'Versatilidade e produtividade' },
+            'applewatch': { titulo: '⌚ Apple Watch', subtitulo: 'Seu companheiro diário' },
+            'audio': { titulo: '🔊 Áudio', subtitulo: 'Som de alta qualidade' },
+            'acessorios': { titulo: '🔌 Acessórios', subtitulo: 'Complete sua experiência' },
+            'ofertas': { titulo: '🔥 Ofertas', subtitulo: 'Promoções imperdíveis' }
+        };
+        
+        // Inicializar catálogo
+        function inicializarCatalogo() {
+            categoriaAtual = obterCategoria();
+            
+            // Atualizar título
+            const info = titulosCategoria[categoriaAtual] || titulosCategoria['iphone'];
+            document.getElementById('catalogTitle').textContent = info.titulo;
+            document.getElementById('catalogSubtitle').textContent = info.subtitulo;
+            
+            // Gerar produtos
+            gerarProdutos();
+            
+            // Configurar filtros
+            configurarFiltros();
+        }
+        
+        // Gerar lista de produtos da categoria
+        function gerarProdutos() {
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+            
+            produtosExibidos = [];
+            
+            if (!produtosData || !produtosData[categoriaAtual]) {
+                grid.innerHTML = '<div class="catalog-no-products">Nenhum produto encontrado nesta categoria.</div>';
+                return;
+            }
+            
+            const categoria = produtosData[categoriaAtual];
+            
+            // Para produtos com variantes (iPhone, Mac, iPad)
+            if (categoria.modelos && categoria.capacidades && categoria.cores) {
+                // Limitar a combinações mais populares para evitar muitos produtos
+                const capacidadesLimitadas = categoria.capacidades.slice(0, 4); // Primeiras 4 capacidades
+                const coresLimitadas = categoria.cores.slice(0, 6); // Primeiras 6 cores
+                
+                categoria.modelos.forEach(modelo => {
+                    // Mostrar algumas combinações representativas por modelo
+                    capacidadesLimitadas.forEach(capacidade => {
+                        coresLimitadas.forEach(cor => {
+                            const preco = calcularPreco(categoriaAtual, modelo, capacidade, cor);
+                            if (preco > 0) {
+                                produtosExibidos.push({
+                                    modelo,
+                                    capacidade,
+                                    cor,
+                                    preco,
+                                    nome: `${modelo} ${capacidade} ${cor}`
+                                });
+                            }
+                        });
+                    });
+                });
+            } 
+            // Para produtos simples (Apple Watch, Audio, Acessórios, Ofertas)
+            else if (categoria.modelos && categoria.precos) {
+                categoria.modelos.forEach(modelo => {
+                    const preco = categoria.precos[modelo] || 0;
+                    if (preco > 0) {
+                        produtosExibidos.push({
+                            modelo,
+                            preco,
+                            nome: modelo
+                        });
+                    }
+                });
+            }
+            
+            // Exibir produtos
+            exibirProdutos(produtosExibidos);
+        }
+        
+        // Calcular preço
+        function calcularPreco(categoria, modelo, capacidade, cor) {
+            if (categoria === 'iphone' && typeof calcularPrecoiPhone === 'function') {
+                return calcularPrecoiPhone(modelo, capacidade, cor);
+            } else if (categoria === 'mac' && typeof calcularPrecoMac === 'function') {
+                return calcularPrecoMac(modelo, capacidade, cor);
+            } else if (categoria === 'ipad' && typeof calcularPrecoiPad === 'function') {
+                return calcularPrecoiPad(modelo, capacidade, cor);
+            }
+            
+            // Fallback: calcular manualmente se as funções não estiverem disponíveis
+            const categoriaData = produtosData[categoria];
+            if (!categoriaData || !categoriaData.precosBase) return 0;
+            
+            const precoBase = categoriaData.precosBase[modelo] || 0;
+            if (!precoBase) return 0;
+            
+            const multiplicador = categoriaData.multiplicadorCapacidade[capacidade] || 1;
+            return Math.round(precoBase * multiplicador);
+        }
+        
+        // Exibir produtos no grid
+        function exibirProdutos(produtos) {
+            const grid = document.getElementById('catalogGrid');
+            
+            if (produtos.length === 0) {
+                grid.innerHTML = '<div class="catalog-no-products">Nenhum produto encontrado com esses filtros.</div>';
+                return;
+            }
+            
+            produtos.forEach(produto => {
+                const card = criarCardProduto(produto);
+                grid.appendChild(card);
+            });
+        }
+        
+        // Criar card de produto
+        function criarCardProduto(produto) {
+            const card = document.createElement('div');
+            card.className = 'catalog-product-card';
+            
+            // Imagem placeholder baseada na categoria
+            const imagemPlaceholder = obterImagemPlaceholder(categoriaAtual, produto.modelo);
+            
+            const specs = produto.capacidade && produto.cor 
+                ? `${produto.capacidade} • ${produto.cor}`
+                : '';
+            
+            card.innerHTML = `
+                <div class="catalog-product-image">
+                    <img src="${imagemPlaceholder}" alt="${produto.nome}" onerror="this.style.display='none'">
+                </div>
+                <div class="catalog-product-name">${produto.nome}</div>
+                ${specs ? `<div class="catalog-product-specs">${specs}</div>` : ''}
+                <div class="catalog-product-price">R$ ${produto.preco.toLocaleString('pt-BR')}</div>
+            `;
+            
+            card.onclick = () => {
+                selecionarProduto(produto);
+            };
+            
+            return card;
+        }
+        
+        // Obter imagem placeholder
+        function obterImagemPlaceholder(categoria, modelo) {
+            // URLs de imagens da Apple Store ou placeholders
+            const imagens = {
+                'iphone': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
+                'mac': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/macbook-air-13-m3-space-gray-select-20240206?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1707257213583',
+                'ipad': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-air-11-select-202405?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1713202748004',
+                'applewatch': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-se3-nc-se3-202509-select?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1728439962720',
+                'audio': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-pro-4th-gen-select-202409?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
+                'acessorios': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-usb-c-to-lightning-cable-1m-select-202409?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
+                'ofertas': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957'
+            };
+            return imagens[categoria] || '';
+        }
+        
+        // Selecionar produto e redirecionar para formulário
+        function selecionarProduto(produto) {
+            const params = new URLSearchParams();
+            params.set('categoria', categoriaAtual);
+            params.set('modelo', produto.modelo);
+            if (produto.capacidade) params.set('capacidade', produto.capacidade);
+            if (produto.cor) params.set('cor', produto.cor);
+            params.set('preco', produto.preco);
+            
+            window.location.href = `/?${params.toString()}#contato`;
+        }
+        
+        // Configurar filtros
+        function configurarFiltros() {
+            const categoria = produtosData[categoriaAtual];
+            
+            if (!categoria) {
+                document.getElementById('filtersSection').style.display = 'none';
+                return;
+            }
+            
+            // Mostrar seção de filtros se tiver variantes
+            if (categoria.modelos && categoria.capacidades && categoria.cores) {
+                document.getElementById('filtersSection').style.display = 'block';
+                document.getElementById('filterCapacidadeGroup').style.display = 'block';
+                document.getElementById('filterCorGroup').style.display = 'block';
+                
+                // Popular filtros
+                popularSelect('filterModelo', categoria.modelos);
+                popularSelect('filterCapacidade', categoria.capacidades);
+                popularSelect('filterCor', categoria.cores);
+            } else if (categoria.modelos) {
+                document.getElementById('filtersSection').style.display = 'block';
+                document.getElementById('filterCapacidadeGroup').style.display = 'none';
+                document.getElementById('filterCorGroup').style.display = 'none';
+                popularSelect('filterModelo', categoria.modelos);
+            } else {
+                document.getElementById('filtersSection').style.display = 'none';
+            }
+        }
+        
+        function popularSelect(id, opcoes) {
+            const select = document.getElementById(id);
+            select.innerHTML = '<option value="">Todos</option>';
+            opcoes.forEach(opcao => {
+                const option = document.createElement('option');
+                option.value = opcao;
+                option.textContent = opcao;
+                select.appendChild(option);
+            });
+        }
+        
+        // Filtrar produtos
+        function filtrarProdutos() {
+            const modelo = document.getElementById('filterModelo').value;
+            const capacidade = document.getElementById('filterCapacidade').value;
+            const cor = document.getElementById('filterCor').value;
+            
+            let filtrados = produtosExibidos.filter(produto => {
+                if (modelo && produto.modelo !== modelo) return false;
+                if (capacidade && produto.capacidade !== capacidade) return false;
+                if (cor && produto.cor !== cor) return false;
+                return true;
+            });
+            
+            exibirProdutos(filtrados);
+        }
+        
+        // Verificar se veio da página inicial com produto pré-selecionado
+        function verificarPreSelecao() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const modelo = urlParams.get('modelo');
+            const capacidade = urlParams.get('capacidade');
+            const cor = urlParams.get('cor');
+            
+            if (modelo) {
+                // Preencher formulário na página inicial
+                window.location.href = '/';
+                return;
+            }
+        }
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarCatalogo();
+        });
+    </script>
+</body>
+</html>
+

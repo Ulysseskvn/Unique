@@ -702,5 +702,59 @@ function handleSwipe() {
     }
 }
 
+// Verificar se veio do catálogo com produto pré-selecionado
+function verificarPreSelecaoCatalogo() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoria = urlParams.get('categoria');
+    const modelo = urlParams.get('modelo');
+    const capacidade = urlParams.get('capacidade');
+    const cor = urlParams.get('cor');
+    const preco = urlParams.get('preco');
+    
+    if (categoria && modelo) {
+        // Preencher formulário automaticamente
+        setTimeout(() => {
+            if (document.getElementById('tipoProduto')) {
+                document.getElementById('tipoProduto').value = categoria;
+                atualizarSelecoesProduto();
+                
+                setTimeout(() => {
+                    if (modelo && document.getElementById('modeloProduto')) {
+                        document.getElementById('modeloProduto').value = modelo;
+                        atualizarCapacidadeECor();
+                        
+                        setTimeout(() => {
+                            if (capacidade && document.getElementById('capacidadeProduto')) {
+                                document.getElementById('capacidadeProduto').value = capacidade;
+                            }
+                            if (cor && document.getElementById('corProduto')) {
+                                document.getElementById('corProduto').value = cor;
+                            }
+                            calcularPrecoFinal();
+                            
+                            // Scroll até o formulário
+                            const contatoSection = document.getElementById('contato');
+                            if (contatoSection) {
+                                setTimeout(() => {
+                                    contatoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 300);
+                            }
+                        }, 200);
+                    }
+                }, 200);
+            }
+        }, 100);
+    }
+}
+
+// Executar quando a página carregar
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        verificarPreSelecaoCatalogo();
+    });
+} else {
+    verificarPreSelecaoCatalogo();
+}
+
 console.log('🍎 Unique Importados carregada com sucesso!');
 

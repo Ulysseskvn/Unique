@@ -35,13 +35,23 @@ app.get('/mais-vendidos.js', (req, res) => {
     });
 });
 
-// Rota principal
+// Rotas principais
 app.get('/', (req, res) => {
     const indexPath = path.join(rootDir, 'index.html');
     res.sendFile(indexPath, (err) => {
         if (err) {
             // Tentar caminho alternativo
             const altPath = path.join(process.cwd(), 'index.html');
+            res.sendFile(altPath);
+        }
+    });
+});
+
+app.get('/catalogo.html', (req, res) => {
+    const catalogoPath = path.join(rootDir, 'catalogo.html');
+    res.sendFile(catalogoPath, (err) => {
+        if (err) {
+            const altPath = path.join(process.cwd(), 'catalogo.html');
             res.sendFile(altPath);
         }
     });
