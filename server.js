@@ -14,34 +14,62 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Servir arquivos estáticos
-// No Vercel, arquivos estão na raiz do projeto (um nível acima de api/)
-const rootDir = process.env.VERCEL ? path.resolve(__dirname, '..') : __dirname;
+// No Vercel, quando rodando de api/index.js, __dirname é api/, então sobe um nível
+const rootDir = process.env.VERCEL 
+    ? path.resolve(__dirname, '..')
+    : __dirname;
 
+// Tentar múltiplos caminhos
 app.use(express.static(rootDir));
+app.use(express.static(path.join(rootDir, 'public')));
+app.use(express.static(process.cwd()));
 
-// Rotas para arquivos HTML
+// Rota principal
 app.get('/', (req, res) => {
-    res.sendFile(path.join(rootDir, 'index.html'));
+    const indexPath = path.join(rootDir, 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            // Tentar caminho alternativo
+            const altPath = path.join(process.cwd(), 'index.html');
+            res.sendFile(altPath);
+        }
+    });
 });
 
+// Admin
 app.get('/admin.html', (req, res) => {
-    res.sendFile(path.join(rootDir, 'admin.html'));
+    const adminPath = path.join(rootDir, 'admin.html');
+    res.sendFile(adminPath, (err) => {
+        if (err) {
+            const altPath = path.join(process.cwd(), 'admin.html');
+            res.sendFile(altPath);
+        }
+    });
 });
 
-// Servir outros arquivos estáticos (CSS, JS)
-app.get('/:file', (req, res, next) => {
-    const file = req.params.file;
-    const allowedExtensions = ['.html', '.css', '.js'];
-    const ext = path.extname(file);
-    
-    if (allowedExtensions.includes(ext)) {
-        const filePath = path.join(rootDir, file);
-        res.sendFile(filePath, (err) => {
-            if (err) next();
-        });
-    } else {
-        next();
-    }
+// Arquivos estáticos
+app.get('/styles.css', (req, res) => {
+    res.sendFile(path.join(rootDir, 'styles.css'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'styles.css'));
+    });
+});
+
+app.get('/admin.css', (req, res) => {
+    res.sendFile(path.join(rootDir, 'admin.css'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'admin.css'));
+    });
+});
+
+app.get('/script.js', (req, res) => {
+    res.sendFile(path.join(rootDir, 'script.js'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'script.js'));
+    });
+});
+
+app.get('/admin.js', (req, res) => {
+    res.sendFile(path.join(rootDir, 'admin.js'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'admin.js'));
+    });
 });
 
 // Inicializar banco de dados
