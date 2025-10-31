@@ -705,13 +705,20 @@ function handleSwipe() {
 // Verificar se veio do catálogo com produto pré-selecionado
 function verificarPreSelecaoCatalogo() {
     const urlParams = new URLSearchParams(window.location.search);
-    const categoria = urlParams.get('categoria');
+    let categoria = urlParams.get('categoria');
     const modelo = urlParams.get('modelo');
     const capacidade = urlParams.get('capacidade');
     const cor = urlParams.get('cor');
     const preco = urlParams.get('preco');
     
     if (categoria && modelo) {
+        // Converter categoria da URL para o formato do formulário (singular)
+        // O formulário usa 'iphone', mas produtosData usa 'iphones'
+        // Mas o formulário já usa singular, então está correto
+        if (categoria === 'iphones') {
+            categoria = 'iphone'; // Converter para o formato do formulário
+        }
+        
         // Preencher formulário automaticamente
         setTimeout(() => {
             if (document.getElementById('tipoProduto')) {

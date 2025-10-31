@@ -245,15 +245,29 @@
         let categoriaAtual = '';
         let produtosExibidos = [];
         
+        // Mapeamento de URLs para categorias no produtosData
+        const mapeamentoCategorias = {
+            'iphone': 'iphones',  // URL usa singular, dados usam plural
+            'mac': 'mac',
+            'ipad': 'ipad',
+            'applewatch': 'applewatch',
+            'audio': 'audio',
+            'acessorios': 'acessorios',
+            'ofertas': 'ofertas'
+        };
+        
         // Obter categoria da URL
         function obterCategoria() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('categoria') || 'iphone';
+            const categoriaUrl = urlParams.get('categoria') || 'iphone';
+            // Converter para o nome correto usado em produtosData
+            return mapeamentoCategorias[categoriaUrl] || categoriaUrl;
         }
         
-        // Títulos por categoria
+        // Títulos por categoria (usando nome da URL, não do produtosData)
         const titulosCategoria = {
             'iphone': { titulo: '📱 iPhone', subtitulo: 'A escolha perfeita para você' },
+            'iphones': { titulo: '📱 iPhone', subtitulo: 'A escolha perfeita para você' },
             'mac': { titulo: '💻 Mac', subtitulo: 'Potência e performance' },
             'ipad': { titulo: '📱 iPad', subtitulo: 'Versatilidade e produtividade' },
             'applewatch': { titulo: '⌚ Apple Watch', subtitulo: 'Seu companheiro diário' },
@@ -266,8 +280,12 @@
         function inicializarCatalogo() {
             categoriaAtual = obterCategoria();
             
+            // Obter nome da URL para título (sem conversão)
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoriaUrl = urlParams.get('categoria') || 'iphone';
+            
             // Atualizar título
-            const info = titulosCategoria[categoriaAtual] || titulosCategoria['iphone'];
+            const info = titulosCategoria[categoriaUrl] || titulosCategoria['iphone'];
             document.getElementById('catalogTitle').textContent = info.titulo;
             document.getElementById('catalogSubtitle').textContent = info.subtitulo;
             
@@ -443,7 +461,9 @@
         // Obter imagem placeholder
         function obterImagemPlaceholder(categoria, modelo) {
             // URLs de imagens da Apple Store ou placeholders
+            // Usar categoria convertida (iphones) para buscar no objeto
             const imagens = {
+                'iphones': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
                 'iphone': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
                 'mac': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/macbook-air-13-m3-space-gray-select-20240206?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1707257213583',
                 'ipad': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-air-11-select-202405?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1713202748004',
@@ -452,13 +472,16 @@
                 'acessorios': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-usb-c-to-lightning-cable-1m-select-202409?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957',
                 'ofertas': 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957'
             };
-            return imagens[categoria] || '';
+            return imagens[categoria] || imagens['iphones'] || '';
         }
         
         // Selecionar produto e redirecionar para formulário
         function selecionarProduto(produto) {
             const params = new URLSearchParams();
-            params.set('categoria', categoriaAtual);
+            // Usar categoria da URL original (singular), não a convertida
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoriaUrl = urlParams.get('categoria') || 'iphone';
+            params.set('categoria', categoriaUrl);
             params.set('modelo', produto.modelo);
             if (produto.capacidade) params.set('capacidade', produto.capacidade);
             if (produto.cor) params.set('cor', produto.cor);
