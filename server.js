@@ -14,15 +14,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Servir arquivos estáticos
-// No Vercel, quando rodando de api/index.js, __dirname é api/, então sobe um nível
-const rootDir = process.env.VERCEL 
-    ? path.resolve(__dirname, '..')
-    : __dirname;
+// No Vercel, quando rodando direto do server.js, __dirname já é a raiz
+const rootDir = __dirname;
 
 // Tentar múltiplos caminhos
 app.use(express.static(rootDir));
 app.use(express.static(path.join(rootDir, 'public')));
 app.use(express.static(process.cwd()));
+
+// Servir produtos.js
+app.get('/produtos.js', (req, res) => {
+    res.sendFile(path.join(rootDir, 'produtos.js'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'produtos.js'));
+    });
+});
 
 // Rota principal
 app.get('/', (req, res) => {
@@ -99,6 +104,9 @@ db.serialize(() => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cliente_id INTEGER NOT NULL,
             produto TEXT NOT NULL,
+            modelo TEXT,
+            capacidade TEXT,
+            cor TEXT,
             preco REAL NOT NULL,
             mensagem TEXT,
             metodo_pagamento TEXT,
@@ -108,12 +116,11 @@ db.serialize(() => {
         )
     `);
     
-    // Adicionar coluna metodo_pagamento se não existir (para bancos já criados)
-    db.run(`
-        ALTER TABLE pedidos ADD COLUMN metodo_pagamento TEXT
-    `, (err) => {
-        // Ignorar erro se coluna já existir
-    });
+    // Adicionar colunas se não existirem (para bancos já criados)
+    db.run(`ALTER TABLE pedidos ADD COLUMN metodo_pagamento TEXT`, (err) => {});
+    db.run(`ALTER TABLE pedidos ADD COLUMN modelo TEXT`, (err) => {});
+    db.run(`ALTER TABLE pedidos ADD COLUMN capacidade TEXT`, (err) => {});
+    db.run(`ALTER TABLE pedidos ADD COLUMN cor TEXT`, (err) => {});
 });
 
 // ============ ROTAS DE CLIENTES ============
@@ -245,7 +252,17 @@ app.get('/api/pedidos/:id', (req, res) => {
     const { id } = req.params;
     db.get(`
         SELECT 
-            p.*,
+            p.id,
+            p.cliente_id,
+            p.produto,
+            p.modelo,
+            p.capacidade,
+            p.cor,
+            p.preco,
+            p.mensagem,
+            p.metodo_pagamento,
+            p.status,
+            p.created_at,
             c.nome as cliente_nome,
             c.email as cliente_email,
             c.telefone as cliente_telefone,
@@ -269,7 +286,17 @@ app.get('/api/pedidos/cliente/:clienteId', (req, res) => {
     const { clienteId } = req.params;
     db.all(`
         SELECT 
-            p.*,
+            p.id,
+            p.cliente_id,
+            p.produto,
+            p.modelo,
+            p.capacidade,
+            p.cor,
+            p.preco,
+            p.mensagem,
+            p.metodo_pagamento,
+            p.status,
+            p.created_at,
             c.nome as cliente_nome,
             c.email as cliente_email,
             c.telefone as cliente_telefone,
@@ -288,7 +315,7 @@ app.get('/api/pedidos/cliente/:clienteId', (req, res) => {
 
 // Criar novo pedido
 app.post('/api/pedidos', (req, res) => {
-    const { nome, email, telefone, endereco, produto, preco, mensagem, metodo_pagamento } = req.body;
+    const { nome, email, telefone, endereco, produto, modelo, capacidade, cor, preco, mensagem, metodo_pagamento } = req.body;
 
     if (!nome || !email || !telefone || !endereco || !produto || !preco) {
         return res.status(400).json({ error: 'Campos obrigatórios faltando' });
@@ -326,21 +353,21 @@ app.post('/api/pedidos', (req, res) => {
                     clienteId = this.lastID;
                     
                     // Criar pedido
-                    criarPedido(clienteId, produto, preco, mensagem, metodo_pagamento, res);
+                    criarPedido(clienteId, produto, modelo, capacidade, cor, preco, mensagem, metodo_pagamento, res);
                 }
             );
             return;
         }
 
         // Criar pedido
-        criarPedido(clienteId, produto, preco, mensagem, metodo_pagamento, res);
+        criarPedido(clienteId, produto, modelo, capacidade, cor, preco, mensagem, metodo_pagamento, res);
     });
 });
 
-function criarPedido(clienteId, produto, preco, mensagem, metodo_pagamento, res) {
+function criarPedido(clienteId, produto, modelo, capacidade, cor, preco, mensagem, metodo_pagamento, res) {
     db.run(
-        'INSERT INTO pedidos (cliente_id, produto, preco, mensagem, metodo_pagamento) VALUES (?, ?, ?, ?, ?)',
-        [clienteId, produto, preco, mensagem || null, metodo_pagamento || null],
+        'INSERT INTO pedidos (cliente_id, produto, modelo, capacidade, cor, preco, mensagem, metodo_pagamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [clienteId, produto, modelo || null, capacidade || null, cor || null, preco, mensagem || null, metodo_pagamento || null],
         function(err) {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -349,6 +376,9 @@ function criarPedido(clienteId, produto, preco, mensagem, metodo_pagamento, res)
                 id: this.lastID,
                 cliente_id: clienteId,
                 produto,
+                modelo: modelo || null,
+                capacidade: capacidade || null,
+                cor: cor || null,
                 preco,
                 mensagem: mensagem || null,
                 metodo_pagamento: metodo_pagamento || null,

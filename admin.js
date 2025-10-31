@@ -96,6 +96,24 @@ function exibirPedidos(pedidos) {
                         <span class="info-label">Produto</span>
                         <span class="info-value">${pedido.produto}</span>
                     </div>
+                    ${pedido.modelo ? `
+                    <div class="info-item">
+                        <span class="info-label">Modelo</span>
+                        <span class="info-value">${pedido.modelo}</span>
+                    </div>
+                    ` : ''}
+                    ${pedido.capacidade ? `
+                    <div class="info-item">
+                        <span class="info-label">Capacidade</span>
+                        <span class="info-value">${pedido.capacidade}</span>
+                    </div>
+                    ` : ''}
+                    ${pedido.cor ? `
+                    <div class="info-item">
+                        <span class="info-label">Cor</span>
+                        <span class="info-value">${pedido.cor}</span>
+                    </div>
+                    ` : ''}
                     <div class="info-item">
                         <span class="info-label">Pagamento</span>
                         <span class="info-value">${pedido.metodo_pagamento || 'Não informado'}</span>
@@ -335,6 +353,24 @@ async function abrirModalPedido(id) {
                 <span class="info-label">Produto</span>
                 <span class="info-value">${pedido.produto}</span>
             </div>
+            ${pedido.modelo ? `
+            <div class="info-item">
+                <span class="info-label">Modelo</span>
+                <span class="info-value">${pedido.modelo}</span>
+            </div>
+            ` : ''}
+            ${pedido.capacidade ? `
+            <div class="info-item">
+                <span class="info-label">Capacidade</span>
+                <span class="info-value">${pedido.capacidade}</span>
+            </div>
+            ` : ''}
+            ${pedido.cor ? `
+            <div class="info-item">
+                <span class="info-label">Cor</span>
+                <span class="info-value">${pedido.cor}</span>
+            </div>
+            ` : ''}
             <div class="info-item">
                 <span class="info-label">Método de Pagamento</span>
                 <span class="info-value">${pedido.metodo_pagamento || 'Não informado'}</span>

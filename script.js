@@ -73,36 +73,15 @@ const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api'
     : window.location.origin + '/api';
 
-// Seleção de produto - atualiza o select quando clicar no botão
+// Seleção de produto - atualiza o formulário quando clicar no botão
 function selectProduct(productName, price, buttonElement) {
-    const productSelect = document.getElementById('selectedProduct');
-    if (productSelect) {
-        // Encontrar a opção correspondente
-        const option = Array.from(productSelect.options).find(
-            opt => opt.value === productName
-        );
-        if (option) {
-            productSelect.value = productName;
-            productSelect.dispatchEvent(new Event('change'));
-            
-            // Destacar select por 2 segundos
-            productSelect.style.borderColor = 'var(--success-color)';
-            productSelect.style.boxShadow = '0 0 0 3px rgba(52, 199, 89, 0.1)';
-            
-            setTimeout(() => {
-                productSelect.style.borderColor = '';
-                productSelect.style.boxShadow = '';
-            }, 2000);
-        }
-        
-        // Scroll suave para o formulário
-        setTimeout(() => {
-            document.getElementById('contato').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }, 300);
-    }
+    // Scroll suave para o formulário
+    setTimeout(() => {
+        document.getElementById('contato').scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 300);
     
     // Feedback visual no botão clicado
     const button = buttonElement || (window.event ? window.event.target : null);
@@ -111,6 +90,179 @@ function selectProduct(productName, price, buttonElement) {
         setTimeout(() => {
             button.style.transform = '';
         }, 200);
+    }
+}
+
+// Funções para gerenciar seleção de produtos com variantes
+function atualizarSelecoesProduto() {
+    const tipoProduto = document.getElementById('tipoProduto').value;
+    const grupoModelo = document.getElementById('grupoModelo');
+    const grupoCapacidade = document.getElementById('grupoCapacidade');
+    const grupoCor = document.getElementById('grupoCor');
+    const grupoPreco = document.getElementById('grupoPreco');
+    const modeloSelect = document.getElementById('modeloProduto');
+    
+    // Limpar seleções anteriores
+    modeloSelect.innerHTML = '<option value="">Selecione o modelo</option>';
+    grupoCapacidade.style.display = 'none';
+    grupoCor.style.display = 'none';
+    grupoPreco.style.display = 'none';
+    
+    if (!tipoProduto) {
+        grupoModelo.style.display = 'none';
+        return;
+    }
+    
+    grupoModelo.style.display = 'block';
+    
+    // Popular modelos baseado no tipo
+    let modelosArray = [];
+    
+    if (tipoProduto === 'iphone') {
+        modelosArray = produtosData.iphones.modelos;
+    } else if (tipoProduto === 'mac') {
+        modelosArray = produtosData.mac.modelos;
+    } else if (tipoProduto === 'ipad') {
+        modelosArray = produtosData.ipad.modelos;
+    } else if (tipoProduto === 'applewatch') {
+        modelosArray = produtosData.applewatch.modelos;
+    } else if (tipoProduto === 'audio') {
+        modelosArray = produtosData.audio.modelos;
+    } else if (tipoProduto === 'acessorios') {
+        modelosArray = produtosData.acessorios.modelos;
+    } else if (tipoProduto === 'ofertas') {
+        modelosArray = produtosData.ofertas.modelos;
+    }
+    
+    modelosArray.forEach(modelo => {
+        const option = document.createElement('option');
+        option.value = modelo;
+        option.textContent = modelo;
+        modeloSelect.appendChild(option);
+    });
+}
+
+function atualizarCapacidadeECor() {
+    const tipoProduto = document.getElementById('tipoProduto').value;
+    const modelo = document.getElementById('modeloProduto').value;
+    const grupoCapacidade = document.getElementById('grupoCapacidade');
+    const grupoCor = document.getElementById('grupoCor');
+    const capacidadeSelect = document.getElementById('capacidadeProduto');
+    const corSelect = document.getElementById('corProduto');
+    
+    // Limpar
+    capacidadeSelect.innerHTML = '<option value="">Selecione a capacidade</option>';
+    corSelect.innerHTML = '<option value="">Selecione a cor</option>';
+    grupoCapacidade.style.display = 'none';
+    grupoCor.style.display = 'none';
+    
+    if (!modelo) return;
+    
+    // Verificar quais produtos têm capacidade e cor
+    const produtosComVariantes = ['iphone', 'mac', 'ipad'];
+    
+    if (produtosComVariantes.includes(tipoProduto)) {
+        // Mostrar capacidade e cor
+        grupoCapacidade.style.display = 'block';
+        grupoCor.style.display = 'block';
+        
+        let capacidadesArray = [];
+        let coresArray = [];
+        
+        if (tipoProduto === 'iphone') {
+            capacidadesArray = produtosData.iphones.capacidades;
+            coresArray = produtosData.iphones.cores;
+        } else if (tipoProduto === 'mac') {
+            capacidadesArray = produtosData.mac.capacidades;
+            coresArray = produtosData.mac.cores;
+        } else if (tipoProduto === 'ipad') {
+            capacidadesArray = produtosData.ipad.capacidades;
+            coresArray = produtosData.ipad.cores;
+        }
+        
+        // Popular capacidades
+        capacidadesArray.forEach(capacidade => {
+            const option = document.createElement('option');
+            option.value = capacidade;
+            option.textContent = capacidade;
+            capacidadeSelect.appendChild(option);
+        });
+        
+        // Popular cores
+        coresArray.forEach(cor => {
+            const option = document.createElement('option');
+            option.value = cor;
+            option.textContent = cor;
+            corSelect.appendChild(option);
+        });
+    } else {
+        // Para outros produtos, não tem capacidade/cor
+        grupoCapacidade.style.display = 'none';
+        grupoCor.style.display = 'none';
+        calcularPrecoFinal();
+    }
+}
+
+function calcularPrecoFinal() {
+    const tipoProduto = document.getElementById('tipoProduto').value;
+    const modelo = document.getElementById('modeloProduto').value;
+    const capacidade = document.getElementById('capacidadeProduto').value;
+    const cor = document.getElementById('corProduto').value;
+    const grupoPreco = document.getElementById('grupoPreco');
+    const precoFinal = document.getElementById('precoFinal');
+    const precoFinalValue = document.getElementById('precoFinalValue');
+    const produtoCompleto = document.getElementById('produtoCompleto');
+    
+    if (!modelo) {
+        grupoPreco.style.display = 'none';
+        return;
+    }
+    
+    let preco = 0;
+    let descricao = modelo;
+    
+    if (tipoProduto === 'iphone') {
+        if (!capacidade || !cor) {
+            grupoPreco.style.display = 'none';
+            return;
+        }
+        preco = calcularPrecoiPhone(modelo, capacidade, cor);
+        descricao = `${modelo} ${capacidade} ${cor}`;
+    } else if (tipoProduto === 'mac') {
+        if (!capacidade || !cor) {
+            grupoPreco.style.display = 'none';
+            return;
+        }
+        preco = calcularPrecoMac(modelo, capacidade, cor);
+        descricao = `${modelo} ${capacidade} ${cor}`;
+    } else if (tipoProduto === 'ipad') {
+        if (!capacidade || !cor) {
+            grupoPreco.style.display = 'none';
+            return;
+        }
+        preco = calcularPrecoiPad(modelo, capacidade, cor);
+        descricao = `${modelo} ${capacidade} ${cor}`;
+    } else if (tipoProduto === 'applewatch') {
+        preco = produtosData.applewatch.precos[modelo] || 0;
+        descricao = modelo;
+    } else if (tipoProduto === 'audio') {
+        preco = produtosData.audio.precos[modelo] || 0;
+        descricao = modelo;
+    } else if (tipoProduto === 'acessorios') {
+        preco = produtosData.acessorios.precos[modelo] || 0;
+        descricao = modelo;
+    } else if (tipoProduto === 'ofertas') {
+        preco = produtosData.ofertas.precos[modelo] || 0;
+        descricao = modelo;
+    }
+    
+    if (preco > 0) {
+        grupoPreco.style.display = 'block';
+        precoFinal.value = `R$ ${preco.toLocaleString('pt-BR')}`;
+        precoFinalValue.value = preco;
+        produtoCompleto.value = descricao;
+    } else {
+        grupoPreco.style.display = 'none';
     }
 }
 
@@ -125,17 +277,35 @@ if (orderForm) {
         
         // Coletar dados do formulário
         const formData = new FormData(orderForm);
-        const productSelect = document.getElementById('selectedProduct');
-        const selectedOption = productSelect.options[productSelect.selectedIndex];
+        const tipoProduto = document.getElementById('tipoProduto').value;
+        const modelo = document.getElementById('modeloProduto').value;
+        const capacidade = document.getElementById('capacidadeProduto').value || '';
+        const cor = document.getElementById('corProduto').value || '';
+        const produtoCompleto = document.getElementById('produtoCompleto').value;
+        const precoFinalValue = document.getElementById('precoFinalValue').value;
         
-        if (!productSelect.value) {
-            alert('Por favor, selecione um produto antes de enviar o pedido!');
-            productSelect.focus();
+        // Verificar se precisa de capacidade/cor
+        const produtosComVariantes = ['iphone', 'mac', 'ipad'];
+        const precisaVariantes = produtosComVariantes.includes(tipoProduto);
+        
+        if (!tipoProduto || !modelo || !precoFinalValue || !produtoCompleto) {
+            alert('Por favor, complete a seleção do produto antes de enviar o pedido!');
+            if (!tipoProduto) document.getElementById('tipoProduto').focus();
+            else if (!modelo) document.getElementById('modeloProduto').focus();
+            else if (precisaVariantes && !capacidade) document.getElementById('capacidadeProduto').focus();
+            else if (precisaVariantes && !cor) document.getElementById('corProduto').focus();
             return;
         }
         
-        const produto = productSelect.value;
-        const preco = parseFloat(selectedOption.getAttribute('data-price'));
+        if (precisaVariantes && (!capacidade || !cor)) {
+            alert('Por favor, selecione capacidade e cor!');
+            if (!capacidade) document.getElementById('capacidadeProduto').focus();
+            else document.getElementById('corProduto').focus();
+            return;
+        }
+        
+        const produto = produtoCompleto;
+        const preco = parseFloat(precoFinalValue);
         const nome = formData.get('nome') || orderForm.querySelector('input[type="text"]').value;
         const email = formData.get('email') || orderForm.querySelector('input[type="email"]').value;
         const telefone = formData.get('telefone') || orderForm.querySelector('input[type="tel"]').value;
@@ -163,6 +333,9 @@ if (orderForm) {
                     telefone,
                     endereco,
                     produto,
+                    modelo: modelo || null,
+                    capacidade: capacidade || null,
+                    cor: cor || null,
                     preco,
                     metodo_pagamento,
                     mensagem: mensagem || null

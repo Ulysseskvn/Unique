@@ -204,13 +204,45 @@
             <div class="contact-content">
                 <form class="contact-form" id="orderForm">
                     <div class="form-group">
-                        <label>Produto Selecionado</label>
-                        <select id="selectedProduct" name="product" required>
-                            <option value="">Selecione um produto</option>
-                            <option value="iPhone 15 Pro Max" data-price="10999">iPhone 15 Pro Max - R$ 10.999</option>
-                            <option value="AirPods Pro" data-price="1999">AirPods Pro (2ª Geração) - R$ 1.999</option>
-                            <option value="Apple Watch Series 9" data-price="3999">Apple Watch Series 9 - R$ 3.999</option>
+                        <label>Tipo de Produto</label>
+                        <select id="tipoProduto" name="tipo_produto" required onchange="atualizarSelecoesProduto()">
+                            <option value="">Selecione o tipo</option>
+                            <option value="iphone">📱 iPhone</option>
+                            <option value="mac">💻 Mac</option>
+                            <option value="ipad">📱 iPad</option>
+                            <option value="applewatch">⌚ Apple Watch</option>
+                            <option value="audio">🔊 Áudio</option>
+                            <option value="acessorios">🔌 Acessórios</option>
+                            <option value="ofertas">🔥 Ofertas</option>
                         </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupoModelo" style="display: none;">
+                        <label>Modelo</label>
+                        <select id="modeloProduto" name="modelo" required onchange="atualizarCapacidadeECor()">
+                            <option value="">Selecione o modelo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupoCapacidade" style="display: none;">
+                        <label>Capacidade</label>
+                        <select id="capacidadeProduto" name="capacidade" required onchange="calcularPrecoFinal()">
+                            <option value="">Selecione a capacidade</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupoCor" style="display: none;">
+                        <label>Cor</label>
+                        <select id="corProduto" name="cor" required onchange="calcularPrecoFinal()">
+                            <option value="">Selecione a cor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupoPreco" style="display: none;">
+                        <label>Preço Total</label>
+                        <input type="text" id="precoFinal" readonly style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">
+                        <input type="hidden" id="precoFinalValue" name="preco">
+                        <input type="hidden" id="produtoCompleto" name="produto">
                     </div>
                     <div class="form-group">
                         <label>Nome Completo</label>
@@ -287,6 +319,7 @@
         </div>
     </footer>
 
+    <script src="produtos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
