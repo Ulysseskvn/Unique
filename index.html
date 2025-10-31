@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Unique Importados - Compre iPhone, AirPods e Apple Watch com os melhores preços e garantia">
+    <title>Unique Importados - iPhone, AirPods e Apple Watch</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>🍎 Unique Importados</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#produtos">Produtos</a></li>
+                <li><a href="#beneficios">Benefícios</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView()">Comprar Agora</button>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Ofertas Especiais</div>
+                <h1 class="hero-title">
+                    Produtos Apple com os
+                    <span class="gradient-text">melhores preços</span>
+                </h1>
+                <p class="hero-description">
+                    Produtos Apple importados originais com garantia oficial. Entrega rápida e seguro para todo Brasil.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large" onclick="document.getElementById('produtos').scrollIntoView()">Ver Produtos</button>
+                    <button class="btn-secondary btn-large" onclick="document.getElementById('beneficios').scrollIntoView()">Por que escolher?</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-placeholder">
+                    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="400" rx="30" fill="url(#gradient)"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="400" y2="400">
+                                <stop offset="0%" stop-color="#007aff"/>
+                                <stop offset="100%" stop-color="#5856d6"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- iPhone -->
+                        <rect x="150" y="100" width="100" height="200" rx="15" fill="white" opacity="0.9"/>
+                        <rect x="155" y="115" width="90" height="150" rx="5" fill="#000"/>
+                        <circle cx="200" cy="275" r="8" fill="white" opacity="0.8"/>
+                        <!-- AirPods -->
+                        <ellipse cx="120" cy="330" rx="25" ry="15" fill="white" opacity="0.9"/>
+                        <ellipse cx="280" cy="330" rx="25" ry="15" fill="white" opacity="0.9"/>
+                        <!-- Apple Watch -->
+                        <circle cx="200" cy="50" r="35" fill="white" opacity="0.9"/>
+                        <circle cx="200" cy="50" r="25" fill="#000"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="produtos" class="products">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Produtos</h2>
+                <p>Escolha o produto Apple perfeito para você</p>
+            </div>
+            <div class="products-grid">
+                <!-- iPhone Card -->
+                <div class="product-card featured">
+                    <div class="product-badge">Mais Vendido</div>
+                    <div class="product-icon">📱</div>
+                    <h3>iPhone 15 Pro Max</h3>
+                    <div class="product-specs">
+                        <p>• Tela Super Retina XDR de 6.7"</p>
+                        <p>• Chip A17 Pro</p>
+                        <p>• Sistema de câmera profissional</p>
+                        <p>• Bateria para o dia todo</p>
+                    </div>
+                    <div class="product-price">
+                        <span class="price-old">R$ 12.499</span>
+                        <span class="price-new">R$ 10.999</span>
+                    </div>
+                    <div class="product-installment">ou 12x de R$ 916,58</div>
+                    <button class="btn-primary btn-product" onclick="selectProduct('iPhone 15 Pro Max', 10999, this)">Comprar iPhone</button>
+                </div>
+
+                <!-- AirPods Card -->
+                <div class="product-card">
+                    <div class="product-icon">🎧</div>
+                    <h3>AirPods Pro (2ª Geração)</h3>
+                    <div class="product-specs">
+                        <p>• Cancelamento ativo de ruído</p>
+                        <p>• Áudio espacial personalizado</p>
+                        <p>• Até 30h de bateria</p>
+                        <p>• Resistente à água e suor</p>
+                    </div>
+                    <div class="product-price">
+                        <span class="price-old">R$ 2.399</span>
+                        <span class="price-new">R$ 1.999</span>
+                    </div>
+                    <div class="product-installment">ou 10x de R$ 199,90</div>
+                    <button class="btn-primary btn-product" onclick="selectProduct('AirPods Pro', 1999, this)">Comprar AirPods</button>
+                </div>
+
+                <!-- Apple Watch Card -->
+                <div class="product-card">
+                    <div class="product-icon">⌚</div>
+                    <h3>Apple Watch Series 9</h3>
+                    <div class="product-specs">
+                        <p>• Tela Always-On Retina de 45mm</p>
+                        <p>• Chip S9 SiP</p>
+                        <p>• Monitoramento de saúde 24/7</p>
+                        <p>• Resistente à água</p>
+                    </div>
+                    <div class="product-price">
+                        <span class="price-old">R$ 4.599</span>
+                        <span class="price-new">R$ 3.999</span>
+                    </div>
+                    <div class="product-installment">ou 12x de R$ 333,25</div>
+                    <button class="btn-primary btn-product" onclick="selectProduct('Apple Watch Series 9', 3999, this)">Comprar Apple Watch</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="beneficios" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Por que comprar conosco?</h2>
+                <p>Garantimos a melhor experiência de compra</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✓</div>
+                    <h3>100% Original</h3>
+                    <p>Produtos Apple autênticos com garantia oficial e nota fiscal.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Entrega Rápida</h3>
+                    <p>Frete grátis para todo Brasil. Receba em até 5 dias úteis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Compra Segura</h3>
+                    <p>Pagamento 100% seguro com todos os métodos de pagamento.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Garantia Oficial</h3>
+                    <p>Garantia Apple de 1 ano para todos os produtos vendidos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Suporte Especializado</h3>
+                    <p>Atendimento especializado para dúvidas e suporte técnico.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">↩️</div>
+                    <h3>Troca Garantida</h3>
+                    <p>Política de devolução em até 7 dias após o recebimento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Pronto para comprar seu produto Apple?</h2>
+                <p>Junte-se a mais de 50 mil clientes satisfeitos e leve tecnologia de ponta para sua casa.</p>
+                <button class="btn-primary btn-large" onclick="document.getElementById('contato').scrollIntoView()">Fazer Pedido Agora</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact/Order Section -->
+    <section id="contato" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Fazer Pedido</h2>
+                <p>Preencha o formulário e nossa equipe entrará em contato</p>
+            </div>
+            <div class="contact-content">
+                <form class="contact-form" id="orderForm">
+                    <div class="form-group">
+                        <label>Produto Selecionado</label>
+                        <select id="selectedProduct" name="product" required>
+                            <option value="">Selecione um produto</option>
+                            <option value="iPhone 15 Pro Max" data-price="10999">iPhone 15 Pro Max - R$ 10.999</option>
+                            <option value="AirPods Pro" data-price="1999">AirPods Pro (2ª Geração) - R$ 1.999</option>
+                            <option value="Apple Watch Series 9" data-price="3999">Apple Watch Series 9 - R$ 3.999</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" name="nome" placeholder="Seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone/WhatsApp</label>
+                        <input type="tel" name="telefone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço Completo</label>
+                        <textarea name="endereco" placeholder="Rua, número, bairro, cidade - CEP" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pagamento</label>
+                        <select name="metodo_pagamento" required>
+                            <option value="">Selecione o método de pagamento</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Boleto">Boleto</option>
+                            <option value="Transferência Bancária">Transferência Bancária</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensagem (opcional)</label>
+                        <textarea name="mensagem" placeholder="Alguma informação adicional sobre seu pedido" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary btn-large">Enviar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🍎 Unique Importados</h3>
+                    <p>Os melhores produtos Apple importados com os melhores preços. Qualidade garantida!</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Produtos</h4>
+                    <ul>
+                        <li><a href="#produtos">iPhone</a></li>
+                        <li><a href="#produtos">AirPods</a></li>
+                        <li><a href="#produtos">Apple Watch</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#produtos">Produtos</a></li>
+                        <li><a href="#beneficios">Benefícios</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Atendimento</h4>
+                    <p>📱 (11) 99999-9999</p>
+                    <p>📧 contato@uniqueimportados.com.br</p>
+                    <p>💬 WhatsApp disponível 24/7</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Unique Importados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

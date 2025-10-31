@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Unique Importados</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <h1>🍎 Unique Importados</h1>
+                <h2>Painel Administrativo</h2>
+            </div>
+            <div class="header-actions">
+                <button class="btn-refresh" onclick="carregarDados()">🔄 Atualizar</button>
+                <a href="index.html" class="btn-home">🏠 Voltar ao Site</a>
+            </div>
+        </header>
+
+        <!-- Estatísticas -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3 id="totalClientes">0</h3>
+                    <p>Total de Clientes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h3 id="totalPedidos">0</h3>
+                    <p>Total de Pedidos</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="totalVendido">R$ 0</h3>
+                    <p>Total Vendido</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3 id="pedidosPendentes">0</h3>
+                    <p>Pedidos Pendentes</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Abas -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="mostrarAba('pedidos')">📦 Pedidos</button>
+            <button class="tab-btn" onclick="mostrarAba('clientes')">👥 Clientes</button>
+            <button class="tab-btn" onclick="mostrarAba('estatisticas')">📊 Estatísticas</button>
+        </div>
+
+        <!-- Conteúdo das Abas -->
+        <div class="tab-content">
+            <!-- Aba Pedidos -->
+            <div id="aba-pedidos" class="aba active">
+                <div class="filters">
+                    <select id="filtroStatus" onchange="filtrarPedidos()">
+                        <option value="">Todos os Status</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="enviado">Enviado</option>
+                        <option value="entregue">Entregue</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                    <input type="text" id="buscaPedido" placeholder="🔍 Buscar pedido, cliente ou produto..." onkeyup="filtrarPedidos()">
+                </div>
+                <div id="listaPedidos" class="cards-container">
+                    <!-- Pedidos serão carregados aqui -->
+                </div>
+            </div>
+
+            <!-- Aba Clientes -->
+            <div id="aba-clientes" class="aba">
+                <div class="filters">
+                    <input type="text" id="buscaCliente" placeholder="🔍 Buscar cliente por nome, email ou telefone..." onkeyup="filtrarClientes()">
+                </div>
+                <div id="listaClientes" class="cards-container">
+                    <!-- Clientes serão carregados aqui -->
+                </div>
+            </div>
+
+            <!-- Aba Estatísticas -->
+            <div id="aba-estatisticas" class="aba">
+                <div class="stats-grid">
+                    <div class="stat-detail-card">
+                        <h3>📊 Pedidos por Status</h3>
+                        <div id="statsStatus" class="stats-list"></div>
+                    </div>
+                    <div class="stat-detail-card">
+                        <h3>💳 Métodos de Pagamento</h3>
+                        <div id="statsPagamento" class="stats-list"></div>
+                    </div>
+                    <div class="stat-detail-card">
+                        <h3>📱 Produtos Mais Vendidos</h3>
+                        <div id="statsProdutos" class="stats-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Pedido -->
+    <div id="modalPedido" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2>Detalhes do Pedido #<span id="modalPedidoId"></span></h2>
+            <div id="modalPedidoConteudo"></div>
+            <div class="modal-actions">
+                <label for="novoStatus">Alterar Status:</label>
+                <select id="novoStatus">
+                    <option value="pendente">Pendente</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="enviado">Enviado</option>
+                    <option value="entregue">Entregue</option>
+                    <option value="cancelado">Cancelado</option>
+                </select>
+                <button onclick="atualizarStatus()" class="btn-save">Salvar Status</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
+
