@@ -281,40 +281,61 @@
         // Gerar lista de produtos da categoria
         function gerarProdutos() {
             const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = '';
+            grid.innerHTML = '<div class="catalog-no-products">Carregando produtos...</div>';
             
             produtosExibidos = [];
             
-            if (!produtosData || !produtosData[categoriaAtual]) {
-                grid.innerHTML = '<div class="catalog-no-products">Nenhum produto encontrado nesta categoria.</div>';
+            if (!produtosData) {
+                grid.innerHTML = '<div class="catalog-no-products">Erro: dados de produtos não carregados. <br>Recarregue a página.</div>';
+                console.error('❌ produtosData não está definido');
+                return;
+            }
+            
+            if (!produtosData[categoriaAtual]) {
+                grid.innerHTML = `<div class="catalog-no-products">Categoria "${categoriaAtual}" não encontrada. <br>Categorias disponíveis: ${Object.keys(produtosData).join(', ')}</div>`;
+                console.error('❌ Categoria não encontrada:', categoriaAtual, '| Categorias disponíveis:', Object.keys(produtosData));
                 return;
             }
             
             const categoria = produtosData[categoriaAtual];
+            console.log('✅ Categoria encontrada:', categoriaAtual, categoria);
             
             // Para produtos com variantes (iPhone, Mac, iPad)
             if (categoria.modelos && categoria.capacidades && categoria.cores) {
+                console.log('📱 Gerando produtos com variantes...', {
+                    modelos: categoria.modelos.length,
+                    capacidades: categoria.capacidades.length,
+                    cores: categoria.cores.length
+                });
+                
                 // Limitar a combinações mais populares para evitar muitos produtos
                 const capacidadesLimitadas = categoria.capacidades.slice(0, 4); // Primeiras 4 capacidades
                 const coresLimitadas = categoria.cores.slice(0, 6); // Primeiras 6 cores
                 
+                let produtosAdicionados = 0;
                 categoria.modelos.forEach(modelo => {
                     // Mostrar algumas combinações representativas por modelo
                     capacidadesLimitadas.forEach(capacidade => {
                         coresLimitadas.forEach(cor => {
-                            const preco = calcularPreco(categoriaAtual, modelo, capacidade, cor);
-                            if (preco > 0) {
-                                produtosExibidos.push({
-                                    modelo,
-                                    capacidade,
-                                    cor,
-                                    preco,
-                                    nome: `${modelo} ${capacidade} ${cor}`
-                                });
+                            try {
+                                const preco = calcularPreco(categoriaAtual, modelo, capacidade, cor);
+                                if (preco && preco > 0 && !isNaN(preco)) {
+                                    produtosExibidos.push({
+                                        modelo,
+                                        capacidade,
+                                        cor,
+                                        preco,
+                                        nome: `${modelo} ${capacidade} ${cor}`
+                                    });
+                                    produtosAdicionados++;
+                                }
+                            } catch (e) {
+                                console.warn('⚠️ Erro ao calcular preço:', e, {modelo, capacidade, cor});
                             }
                         });
                     });
                 });
+                console.log(`✅ Produtos adicionados: ${produtosAdicionados}`);
             } 
             // Para produtos simples (Apple Watch, Audio, Acessórios, Ofertas)
             else if (categoria.modelos && categoria.precos) {
@@ -331,11 +352,17 @@
             }
             
             // Exibir produtos
+            console.log(`✅ Total de produtos gerados: ${produtosExibidos.length}`);
             exibirProdutos(produtosExibidos);
+            
+            if (produtosExibidos.length === 0) {
+                grid.innerHTML = '<div class="catalog-no-products">Nenhum produto encontrado para esta categoria. <br>Tente usar os filtros acima.</div>';
+            }
         }
         
         // Calcular preço
         function calcularPreco(categoria, modelo, capacidade, cor) {
+            // Tentar usar função global se disponível
             if (categoria === 'iphone' && typeof calcularPrecoiPhone === 'function') {
                 return calcularPrecoiPhone(modelo, capacidade, cor);
             } else if (categoria === 'mac' && typeof calcularPrecoMac === 'function') {
@@ -345,14 +372,29 @@
             }
             
             // Fallback: calcular manualmente se as funções não estiverem disponíveis
+            if (!produtosData || !produtosData[categoria]) return 0;
+            
             const categoriaData = produtosData[categoria];
-            if (!categoriaData || !categoriaData.precosBase) return 0;
+            if (!categoriaData.precosBase) return 0;
             
-            const precoBase = categoriaData.precosBase[modelo] || 0;
-            if (!precoBase) return 0;
+            const precoBase = categoriaData.precosBase[modelo];
+            if (!precoBase || precoBase === 0) return 0;
             
-            const multiplicador = categoriaData.multiplicadorCapacidade[capacidade] || 1;
-            return Math.round(precoBase * multiplicador);
+            const multiplicador = categoriaData.multiplicadorCapacidade && categoriaData.multiplicadorCapacidade[capacidade] 
+                ? categoriaData.multiplicadorCapacidade[capacidade] 
+                : 1;
+            
+            let preco = Math.round(precoBase * multiplicador);
+            
+            // Para iPhone: adicionar acréscimo em cores especiais (Titânio)
+            if (categoria === 'iphone') {
+                const coresEspeciais = ['Titânio azul', 'Titânio branco', 'Titânio natural', 'Titânio preto', 'Titânio-deserto'];
+                if (coresEspeciais.includes(cor)) {
+                    preco = Math.round(preco * 1.1); // +10% para versões titânio
+                }
+            }
+            
+            return preco;
         }
         
         // Exibir produtos no grid
@@ -495,10 +537,24 @@
             }
         }
         
+        // Aguardar produtos.js carregar antes de inicializar
+        function tentarInicializar() {
+            if (typeof produtosData !== 'undefined') {
+                inicializarCatalogo();
+            } else {
+                // Tentar novamente após um pequeno delay
+                setTimeout(tentarInicializar, 100);
+            }
+        }
+        
         // Inicializar quando carregar
-        document.addEventListener('DOMContentLoaded', () => {
-            inicializarCatalogo();
-        });
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                tentarInicializar();
+            });
+        } else {
+            tentarInicializar();
+        }
     </script>
 </body>
 </html>
