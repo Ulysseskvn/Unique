@@ -849,6 +849,10 @@ body {
         padding: 0 60px;
     }
 
+    .nav-brand {
+        margin-right: 0;
+    }
+
     .nav-menu {
         position: fixed;
         left: -100%;
@@ -860,6 +864,8 @@ body {
         transition: 0.3s;
         box-shadow: var(--shadow-lg);
         padding: 2rem 0;
+        margin-right: 0;
+        gap: 0;
     }
     
     .nav-menu a {
@@ -873,6 +879,20 @@ body {
 
     .navbar .btn-primary {
         display: none;
+    }
+
+    .navbar .container {
+        padding: 0 1rem;
+    }
+
+    .navbar .container > div:last-child {
+        gap: 0.75rem;
+    }
+
+    .navbar .container > div:last-child a,
+    .navbar .container > div:last-child button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
     }
 
     .hero .container {
@@ -940,6 +960,28 @@ body {
 
     .cta-content h2 {
         font-size: 2rem;
+    }
+
+    .navbar .container {
+        padding: 0 0.75rem;
+    }
+
+    .nav-brand h2 {
+        font-size: 1.1rem;
+    }
+
+    .navbar .container > div:last-child {
+        gap: 0.5rem;
+    }
+
+    .navbar .container > div:last-child a {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .navbar .container > div:last-child a[href="/carrinho.html"] {
+        font-size: 1.2rem;
+        padding: 0.5rem 0.75rem;
     }
 }
 
