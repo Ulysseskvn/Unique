@@ -895,18 +895,18 @@ body {
 
     .navbar .container > div:last-child a,
     .navbar .container > div:last-child button {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem !important;
     }
 
     .navbar .container > div:last-child a[href="/carrinho.html"] {
-        font-size: 1rem;
-        padding: 0.4rem 0.6rem;
+        font-size: 0.9rem !important;
+        padding: 0.4rem 0.5rem !important;
     }
 
     .navbar .container > div:last-child a#login-link {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.7rem;
+        padding: 0.4rem 0.7rem !important;
+        font-size: 0.65rem !important;
     }
 
     .hero .container {
@@ -990,18 +990,26 @@ body {
 
     .navbar .container > div:last-child a,
     .navbar .container > div:last-child button {
-        padding: 0.35rem 0.5rem;
-        font-size: 0.65rem;
+        padding: 0.3rem 0.4rem !important;
+        font-size: 0.6rem !important;
     }
 
     .navbar .container > div:last-child a[href="/carrinho.html"] {
-        font-size: 0.9rem;
-        padding: 0.35rem 0.5rem;
+        font-size: 0.75rem !important;
+        padding: 0.3rem 0.4rem !important;
     }
 
     .navbar .container > div:last-child a#login-link {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.6rem;
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.55rem !important;
+    }
+
+    .navbar .container > div:last-child a[href="/carrinho.html"] span#carrinho-contador {
+        width: 16px !important;
+        height: 16px !important;
+        font-size: 0.6rem !important;
+        top: -3px !important;
+        right: -3px !important;
     }
 }
 
