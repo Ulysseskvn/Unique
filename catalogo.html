@@ -160,7 +160,19 @@
                 <li><a href="/catalogo.html?categoria=acessorios">Acessórios</a></li>
                 <li><a href="/catalogo.html?categoria=ofertas">Ofertas</a></li>
             </ul>
-            <button class="btn-primary" onclick="window.location.href='/'">Comprar Agora</button>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <a href="/carrinho.html" style="position: relative; text-decoration: none; color: white; font-size: 1.5rem; padding: 0.75rem 1rem; display: flex; align-items: center; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🛒
+                    <span id="carrinho-contador" style="display: none; position: absolute; top: -5px; right: -5px; background: #ff3b30; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; font-weight: 700; align-items: center; justify-content: center;">0</span>
+                </a>
+                <a href="/login.html" id="login-link" style="text-decoration: none; color: white; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 8px; font-weight: 600; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Entrar</a>
+                <div id="user-menu" style="display: none; align-items: center; gap: 1rem;">
+                    <span class="user-name" style="color: white;">Usuário</span>
+                    <a href="/area-cliente.html" style="text-decoration: none; color: white; padding: 0.5rem 1rem;">Área do Cliente</a>
+                    <button onclick="if(typeof auth !== 'undefined') auth.logout()" style="background: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Sair</button>
+                </div>
+                <button class="btn-primary" onclick="window.location.href='/'">Comprar Agora</button>
+            </div>
             <div class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -606,6 +618,8 @@
             tentarInicializar();
         }
     </script>
+    <script src="/carrinho.js"></script>
+    <script src="/auth.js"></script>
 </body>
 </html>
 
