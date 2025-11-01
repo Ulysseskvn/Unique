@@ -51,6 +51,10 @@ body {
     align-items: center;
 }
 
+.nav-brand {
+    margin-right: 3rem;
+}
+
 .nav-brand h2 {
     color: white;
     font-weight: 700;
@@ -60,6 +64,7 @@ body {
     display: flex;
     list-style: none;
     gap: 3.5rem;
+    margin-right: 3rem;
 }
 
 .nav-menu a {
