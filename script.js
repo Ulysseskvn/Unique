@@ -15,6 +15,14 @@ document.querySelectorAll('.nav-menu a').forEach(link => {
     });
 });
 
+// Fechar menu ao clicar nos botões do menu mobile
+document.querySelectorAll('.mobile-carrinho-btn, .mobile-login-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+    });
+});
+
 // Smooth scroll para links de navegação
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {

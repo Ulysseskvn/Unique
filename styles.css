@@ -889,24 +889,12 @@ body {
         font-size: 1rem;
     }
 
-    .navbar .container > div:last-child {
-        gap: 0.5rem;
+    .desktop-nav-actions {
+        display: none !important;
     }
 
-    .navbar .container > div:last-child a,
-    .navbar .container > div:last-child button {
-        padding: 0.4rem 0.6rem !important;
-        font-size: 0.75rem !important;
-    }
-
-    .navbar .container > div:last-child a[href="/carrinho.html"] {
-        font-size: 0.9rem !important;
-        padding: 0.4rem 0.5rem !important;
-    }
-
-    .navbar .container > div:last-child a#login-link {
-        padding: 0.4rem 0.7rem !important;
-        font-size: 0.65rem !important;
+    .nav-menu .mobile-menu-buttons {
+        display: flex !important;
     }
 
     .hero .container {

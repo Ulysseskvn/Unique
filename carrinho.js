@@ -103,13 +103,24 @@ class Carrinho {
     // Atualizar contador no navbar
     atualizarContador() {
         const contador = document.getElementById('carrinho-contador');
+        const contadorMobile = document.getElementById('carrinho-contador-mobile');
+        const quantidade = this.obterQuantidadeTotal();
+        
         if (contador) {
-            const quantidade = this.obterQuantidadeTotal();
             if (quantidade > 0) {
                 contador.textContent = quantidade;
                 contador.style.display = 'flex';
             } else {
                 contador.style.display = 'none';
+            }
+        }
+        
+        if (contadorMobile) {
+            if (quantidade > 0) {
+                contadorMobile.textContent = quantidade;
+                contadorMobile.style.display = 'flex';
+            } else {
+                contadorMobile.style.display = 'none';
             }
         }
     }

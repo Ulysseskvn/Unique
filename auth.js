@@ -38,18 +38,28 @@ class Auth {
     // Atualizar UI de login/logout
     atualizarUI() {
         const loginLink = document.getElementById('login-link');
+        const loginLinkMobile = document.getElementById('login-link-mobile');
         const userMenu = document.getElementById('user-menu');
+        const userMenuMobile = document.getElementById('user-menu-mobile');
         
         if (this.estaLogado()) {
             if (loginLink) loginLink.style.display = 'none';
+            if (loginLinkMobile) loginLinkMobile.style.display = 'none';
             if (userMenu) {
                 userMenu.style.display = 'flex';
                 const userName = userMenu.querySelector('.user-name');
                 if (userName) userName.textContent = this.usuario.nome.split(' ')[0];
             }
+            if (userMenuMobile) {
+                userMenuMobile.style.display = 'flex';
+                const userNameMobile = userMenuMobile.querySelector('.user-name');
+                if (userNameMobile) userNameMobile.textContent = this.usuario.nome.split(' ')[0];
+            }
         } else {
             if (loginLink) loginLink.style.display = 'block';
+            if (loginLinkMobile) loginLinkMobile.style.display = 'block';
             if (userMenu) userMenu.style.display = 'none';
+            if (userMenuMobile) userMenuMobile.style.display = 'none';
         }
     }
     
