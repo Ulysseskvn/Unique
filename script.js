@@ -1074,5 +1074,102 @@ if (document.readyState === 'loading') {
     verificarCheckoutCarrinho();
 }
 
+// Mostrar informações do PIX
+function mostrarInfoPIX(dados, pedidoId) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%;">
+            <h2 style="margin-bottom: 1rem; color: var(--text-dark);">Código PIX</h2>
+            <p style="color: var(--text-light); margin-bottom: 1rem;">Escaneie o QR Code ou copie o código:</p>
+            <div style="text-align: center; margin: 1.5rem 0; padding: 1rem; background: #f5f5f7; border-radius: 8px;">
+                <img src="${dados.qr_code}" alt="QR Code PIX" style="max-width: 250px;">
+            </div>
+            <div style="background: #f5f5f7; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <input type="text" value="${dados.codigo_pix}" id="codigo-pix" readonly style="width: 100%; padding: 0.5rem; border: none; background: transparent; font-family: monospace; font-size: 0.85rem;">
+            </div>
+            <button onclick="copiarPIX(); this.textContent='✓ Copiado!'" style="width: 100%; padding: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+                Copiar Código PIX
+            </button>
+            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.75rem; background: transparent; color: var(--text-dark); border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer;">
+                Fechar
+            </button>
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                Vencimento: ${new Date(dados.vencimento).toLocaleString('pt-BR')}
+            </p>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Copiar PIX
+    window.copiarPIX = function() {
+        const input = document.getElementById('codigo-pix');
+        input.select();
+        document.execCommand('copy');
+    };
+}
+
+// Mostrar informações do Boleto
+function mostrarInfoBoleto(dados, pedidoId) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%;">
+            <h2 style="margin-bottom: 1rem; color: var(--text-dark);">Boleto Bancário</h2>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">Seu boleto foi gerado:</p>
+            <div style="background: #f5f5f7; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
+                <div style="font-family: monospace; font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem;">
+                    ${dados.codigo_barras}
+                </div>
+                <button onclick="copiarBoleto(); this.textContent='✓ Copiado!'" style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                    Copiar Código de Barras
+                </button>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
+                <strong>Vencimento:</strong> ${new Date(dados.vencimento).toLocaleDateString('pt-BR')}
+            </p>
+            <button onclick="window.open('#', '_blank')" style="width: 100%; padding: 0.75rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;">
+                Imprimir Boleto
+            </button>
+            <button onclick="this.closest('div').parentElement.remove()" style="width: 100%; padding: 0.75rem; background: transparent; color: var(--text-dark); border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer;">
+                Fechar
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    window.copiarBoleto = function() {
+        navigator.clipboard.writeText(dados.codigo_barras);
+    };
+}
+
 console.log('🍎 Unique Importados carregada com sucesso!');
 

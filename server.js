@@ -47,6 +47,12 @@ app.get('/auth.js', (req, res) => {
     });
 });
 
+app.get('/pagamento.js', (req, res) => {
+    res.sendFile(path.join(rootDir, 'pagamento.js'), (err) => {
+        if (err) res.sendFile(path.join(process.cwd(), 'pagamento.js'));
+    });
+});
+
 // Rotas principais
 app.get('/', (req, res) => {
     const indexPath = path.join(rootDir, 'index.html');
