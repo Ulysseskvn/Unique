@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Carrinho de Compras - Unique Importados">
+    <title>Carrinho de Compras - Unique Importados</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .carrinho-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+        
+        .carrinho-header {
+            margin-bottom: 2rem;
+        }
+        
+        .carrinho-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .carrinho-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+        
+        .carrinho-itens {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .carrinho-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .carrinho-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-image {
+            width: 120px;
+            height: 120px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .item-specs {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+        
+        .quantity-btn {
+            background: transparent;
+            border: none;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        
+        .quantity-btn:hover {
+            background: var(--bg-light);
+            border-radius: 4px;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .item-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-left: auto;
+        }
+        
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #ff3b30;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .remove-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .carrinho-resumo {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .resumo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+        
+        .resumo-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .resumo-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            margin-top: 1.5rem;
+        }
+        
+        .resumo-total .label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .resumo-total .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .carrinho-vazio {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .carrinho-vazio h2 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .carrinho-vazio p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 968px) {
+            .carrinho-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .carrinho-resumo {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .carrinho-item {
+                flex-direction: column;
+            }
+            
+            .item-image {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .item-price {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" style="text-decoration: none; color: inherit;"><h2>🍎 Unique Importados</h2></a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/">Início</a></li>
+                <li><a href="/catalogo.html?categoria=iphone">iPhone</a></li>
+                <li><a href="/catalogo.html?categoria=mac">Mac</a></li>
+                <li><a href="/catalogo.html?categoria=ipad">iPad</a></li>
+                <li><a href="/catalogo.html?categoria=applewatch">Apple Watch</a></li>
+                <li><a href="/catalogo.html?categoria=audio">Áudio</a></li>
+                <li><a href="/catalogo.html?categoria=acessorios">Acessórios</a></li>
+                <li><a href="/catalogo.html?categoria=ofertas">Ofertas</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="/carrinho.html" style="position: relative; text-decoration: none; color: white; font-size: 1.5rem; padding: 0.5rem; display: flex; align-items: center;">
+                    🛒
+                    <span id="carrinho-contador" style="display: none; position: absolute; top: -5px; right: -5px; background: #ff3b30; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; font-weight: 700; align-items: center; justify-content: center;">0</span>
+                </a>
+                <button class="btn-primary" onclick="window.location.href='/'">Comprar Agora</button>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Carrinho Content -->
+    <section class="carrinho-container">
+        <div class="carrinho-header">
+            <h1>🛒 Carrinho de Compras</h1>
+        </div>
+
+        <div id="carrinhoContent">
+            <!-- Conteúdo será inserido via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🍎 Unique Importados</h3>
+                    <p>Produtos Apple importados originais com os melhores preços do mercado.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="/">Início</a></li>
+                        <li><a href="/#produtos">Produtos</a></li>
+                        <li><a href="/#contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Email: contato@uniqueimportados.com.br</p>
+                    <p>WhatsApp: (11) 99999-9999</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Unique Importados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="carrinho.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let cupomAtual = null;
+        let freteAtual = 0;
+        
+        // Máscara CEP
+        const cepInput = document.getElementById('cep-frete');
+        if (cepInput) {
+            cepInput.addEventListener('input', function(e) {
+                let valor = e.target.value.replace(/\D/g, '');
+                if (valor.length > 5) {
+                    valor = valor.substring(0, 5) + '-' + valor.substring(5, 8);
+                }
+                e.target.value = valor;
+            });
+        }
+        
+        async function aplicarCupom() {
+            const codigo = document.getElementById('cupom-input').value.trim();
+            const messageDiv = document.getElementById('cupom-message');
+            
+            if (!codigo) {
+                messageDiv.textContent = 'Digite um código de cupom';
+                messageDiv.style.color = '#c33';
+                return;
+            }
+            
+            const subtotal = carrinho.calcularSubtotal();
+            
+            try {
+                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000/api'
+                    : '/api';
+                
+                const response = await fetch(`${API_URL}/cupons/validar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codigo, valor_total: subtotal })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    cupomAtual = data.cupom;
+                    document.getElementById('cupom-aplicado').style.display = 'block';
+                    document.getElementById('cupom-codigo').textContent = cupomAtual.codigo;
+                    messageDiv.textContent = 'Cupom aplicado com sucesso!';
+                    messageDiv.style.color = '#3c3';
+                    atualizarTotal();
+                } else {
+                    messageDiv.textContent = data.error || 'Cupom inválido';
+                    messageDiv.style.color = '#c33';
+                    cupomAtual = null;
+                    document.getElementById('cupom-aplicado').style.display = 'none';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao validar cupom';
+                messageDiv.style.color = '#c33';
+            }
+        }
+        
+        function removerCupom() {
+            cupomAtual = null;
+            document.getElementById('cupom-aplicado').style.display = 'none';
+            document.getElementById('cupom-input').value = '';
+            document.getElementById('cupom-message').textContent = '';
+            atualizarTotal();
+        }
+        
+        async function calcularFrete() {
+            const cep = document.getElementById('cep-frete').value.replace(/\D/g, '');
+            const infoDiv = document.getElementById('frete-info');
+            
+            if (cep.length !== 8) {
+                infoDiv.textContent = 'CEP inválido';
+                infoDiv.style.color = '#c33';
+                return;
+            }
+            
+            infoDiv.textContent = 'Calculando...';
+            infoDiv.style.color = var(--text-light);
+            
+            try {
+                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000/api'
+                    : '/api';
+                
+                const pesoTotal = carrinho.obterPesoTotal();
+                
+                const response = await fetch(`${API_URL}/frete/calcular`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cep, peso_total: pesoTotal })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    freteAtual = data.valor;
+                    document.getElementById('frete-item').style.display = 'flex';
+                    document.getElementById('frete-valor').textContent = `R$ ${freteAtual.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                    infoDiv.textContent = `Entrega em até ${data.prazo_dias} dias úteis`;
+                    infoDiv.style.color = '#3c3';
+                    atualizarTotal();
+                } else {
+                    infoDiv.textContent = data.error || 'Erro ao calcular frete';
+                    infoDiv.style.color = '#c33';
+                    freteAtual = 0;
+                }
+            } catch (error) {
+                infoDiv.textContent = 'Erro ao calcular frete';
+                infoDiv.style.color = '#c33';
+            }
+        }
+        
+        function calcularDesconto() {
+            if (!cupomAtual) return 0;
+            
+            const subtotal = carrinho.calcularSubtotal();
+            
+            if (cupomAtual.tipo === 'percentual') {
+                return subtotal * (cupomAtual.valor / 100);
+            } else {
+                return cupomAtual.valor;
+            }
+        }
+        
+        function atualizarTotal() {
+            const subtotal = carrinho.calcularSubtotal();
+            const desconto = calcularDesconto();
+            const total = subtotal - desconto + freteAtual;
+            
+            document.getElementById('subtotal-carrinho').textContent = `R$ ${subtotal.toLocaleString('pt-BR')}`;
+            document.getElementById('total-final').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            
+            if (desconto > 0) {
+                document.getElementById('desconto-valor').textContent = `-R$ ${desconto.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            }
+        }
+        
+        function renderizarCarrinho() {
+            const container = document.getElementById('carrinhoContent');
+            
+            if (!carrinho || carrinho.itens.length === 0) {
+                container.innerHTML = `
+                    <div class="carrinho-vazio">
+                        <h2>Seu carrinho está vazio</h2>
+                        <p>Adicione produtos ao carrinho para continuar comprando.</p>
+                        <button class="btn-primary" onclick="window.location.href='/'">
+                            Continuar Comprando
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let itensHTML = '';
+            carrinho.itens.forEach(item => {
+                const itemSubtotal = item.preco * item.quantidade;
+                const specs = [];
+                if (item.capacidade) specs.push(item.capacidade);
+                if (item.cor) specs.push(item.cor);
+                
+                itensHTML += `
+                    <div class="carrinho-item" data-id="${item.id}">
+                        <div class="item-image">
+                            <img src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-black?wid=5120&hei=5120&fmt=p-jpg&qlt=80&.v=1726617233957" alt="${item.nome}" onerror="this.style.display='none'">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.nome}</div>
+                            ${specs.length > 0 ? `<div class="item-specs">${specs.join(' • ')}</div>` : ''}
+                            <div class="item-controls">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" onclick="atualizarQuantidade(${item.id}, ${item.quantidade - 1})">−</button>
+                                    <input type="number" class="quantity-input" value="${item.quantidade}" min="1" onchange="atualizarQuantidade(${item.id}, parseInt(this.value))">
+                                    <button class="quantity-btn" onclick="atualizarQuantidade(${item.id}, ${item.quantidade + 1})">+</button>
+                                </div>
+                                <button class="remove-btn" onclick="removerItem(${item.id})" title="Remover item">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            R$ ${itemSubtotal.toLocaleString('pt-BR')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = `
+                <div class="carrinho-content">
+                    <div class="carrinho-itens">
+                        ${itensHTML}
+                    </div>
+                    <div class="carrinho-resumo">
+                        <h3 class="resumo-title">Resumo do Pedido</h3>
+                        <div class="resumo-item">
+                            <span>Subtotal (${carrinho.obterQuantidadeTotal()} itens)</span>
+                            <span id="subtotal-carrinho">R$ ${carrinho.calcularSubtotal().toLocaleString('pt-BR')}</span>
+                        </div>
+                        
+                        <!-- Cupom -->
+                        <div style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="cupom-input" placeholder="Código do cupom" style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;">
+                                <button onclick="aplicarCupom()" style="padding: 0.75rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Aplicar</button>
+                            </div>
+                            <div id="cupom-message" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
+                            <div id="cupom-aplicado" style="margin-top: 0.5rem; display: none;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: #efe; padding: 0.5rem; border-radius: 6px;">
+                                    <span style="color: #3c3; font-size: 0.9rem;"><strong id="cupom-codigo"></strong> aplicado</span>
+                                    <button onclick="removerCupom()" style="background: transparent; border: none; color: #c33; cursor: pointer;">✕</button>
+                                </div>
+                                <div class="resumo-item" id="desconto-item" style="margin-top: 0.5rem; color: #3c3;">
+                                    <span>Desconto</span>
+                                    <span id="desconto-valor">-R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Frete -->
+                        <div style="margin: 1rem 0; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-dark);">Calcular Frete</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="cep-frete" placeholder="CEP" maxlength="9" style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;">
+                                <button onclick="calcularFrete()" style="padding: 0.75rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Calcular</button>
+                            </div>
+                            <div id="frete-info" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);"></div>
+                        </div>
+                        
+                        <div class="resumo-item" id="frete-item" style="display: none;">
+                            <span>Frete</span>
+                            <span id="frete-valor">R$ 0,00</span>
+                        </div>
+                        
+                        <div class="resumo-total">
+                            <span class="label">Total</span>
+                            <span class="value" id="total-final">R$ ${carrinho.calcularSubtotal().toLocaleString('pt-BR')}</span>
+                        </div>
+                        <button class="btn-primary checkout-btn" onclick="irParaCheckout()">
+                            Finalizar Compra
+                        </button>
+                        <button class="btn-secondary" onclick="window.location.href='/'" style="width: 100%; margin-top: 0.5rem;">
+                            Continuar Comprando
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function atualizarQuantidade(id, quantidade) {
+            carrinho.atualizarQuantidade(id, Math.max(1, quantidade));
+            renderizarCarrinho();
+        }
+        
+        function removerItem(id) {
+            if (confirm('Tem certeza que deseja remover este item do carrinho?')) {
+                carrinho.removerItem(id);
+                renderizarCarrinho();
+            }
+        }
+        
+        function irParaCheckout() {
+            // Salvar carrinho e dados extras para o checkout
+            const itens = carrinho.itens;
+            const checkoutData = {
+                itens,
+                cupom: cupomAtual,
+                frete: freteAtual,
+                cep: document.getElementById('cep-frete').value.replace(/\D/g, '')
+            };
+            localStorage.setItem('checkoutItens', JSON.stringify(itens));
+            localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+            window.location.href = '/?checkout=true#contato';
+        }
+        
+        // Renderizar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCarrinho();
+            atualizarTotal();
+        });
+    </script>
+</body>
+</html>
+

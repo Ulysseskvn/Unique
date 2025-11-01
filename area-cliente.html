@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Cliente - Unique Importados</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .area-cliente-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+        
+        .area-cliente-header {
+            margin-bottom: 2rem;
+        }
+        
+        .area-cliente-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .area-cliente-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .area-cliente-tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .area-cliente-tab.active {
+            color: var(--primary-color);
+        }
+        
+        .area-cliente-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .area-cliente-content {
+            display: none;
+        }
+        
+        .area-cliente-content.active {
+            display: block;
+        }
+        
+        .pedido-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .pedido-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .pedido-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .pedido-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-processando {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .status-enviado {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-entregue {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .status-cancelado {
+            background: #f8d7da;
+            color: #842029;
+        }
+        
+        .pedido-detalhes {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .pedido-produtos {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .pedido-produtos li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .pedido-produtos li:last-child {
+            border-bottom: none;
+        }
+        
+        .pedido-total {
+            text-align: right;
+        }
+        
+        .pedido-total .label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .pedido-total .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .user-info {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .info-value {
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .pedido-detalhes {
+                grid-template-columns: 1fr;
+            }
+            
+            .pedido-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" style="text-decoration: none; color: inherit;"><h2>🍎 Unique Importados</h2></a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/">Início</a></li>
+                <li><a href="/catalogo.html?categoria=iphone">iPhone</a></li>
+                <li><a href="/catalogo.html?categoria=mac">Mac</a></li>
+                <li><a href="/catalogo.html?categoria=ipad">iPad</a></li>
+                <li><a href="/catalogo.html?categoria=applewatch">Apple Watch</a></li>
+                <li><a href="/catalogo.html?categoria=audio">Áudio</a></li>
+                <li><a href="/catalogo.html?categoria=acessorios">Acessórios</a></li>
+                <li><a href="/catalogo.html?categoria=ofertas">Ofertas</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="/carrinho.html" style="position: relative; text-decoration: none; color: white; font-size: 1.5rem; padding: 0.5rem; display: flex; align-items: center;">
+                    🛒
+                    <span id="carrinho-contador" style="display: none; position: absolute; top: -5px; right: -5px; background: #ff3b30; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; font-weight: 700; align-items: center; justify-content: center;">0</span>
+                </a>
+                <a href="/login.html" id="login-link" style="text-decoration: none; color: white; padding: 0.5rem 1rem;">Entrar</a>
+                <div id="user-menu" style="display: none; align-items: center; gap: 1rem;">
+                    <span class="user-name" style="color: white;">Usuário</span>
+                    <a href="/area-cliente.html" style="text-decoration: none; color: white; padding: 0.5rem 1rem;">Área do Cliente</a>
+                    <button onclick="auth.logout()" style="background: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Sair</button>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="area-cliente-container">
+        <div class="area-cliente-header">
+            <h1>👤 Área do Cliente</h1>
+        </div>
+
+        <!-- Verificar se está logado -->
+        <div id="nao-logado" style="text-align: center; padding: 4rem 2rem;">
+            <h2>Você precisa estar logado para acessar esta área</h2>
+            <p style="color: var(--text-light); margin: 1rem 0;">Faça login ou cadastre-se para continuar.</p>
+            <button class="btn-primary" onclick="window.location.href='/login.html'">Fazer Login</button>
+        </div>
+
+        <!-- Conteúdo para usuário logado -->
+        <div id="area-logado" style="display: none;">
+            <div class="area-cliente-tabs">
+                <button class="area-cliente-tab active" onclick="trocarTab('pedidos')">Meus Pedidos</button>
+                <button class="area-cliente-tab" onclick="trocarTab('perfil')">Meu Perfil</button>
+            </div>
+
+            <!-- Aba Pedidos -->
+            <div id="tab-pedidos" class="area-cliente-content active">
+                <div id="pedidos-lista">
+                    <p style="text-align: center; padding: 2rem; color: var(--text-light);">Carregando pedidos...</p>
+                </div>
+            </div>
+
+            <!-- Aba Perfil -->
+            <div id="tab-perfil" class="area-cliente-content">
+                <div class="user-info">
+                    <h2 style="margin-bottom: 1.5rem; color: var(--text-dark);">Informações Pessoais</h2>
+                    <div id="user-info-content">
+                        <p style="text-align: center; padding: 2rem; color: var(--text-light);">Carregando informações...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="auth.js"></script>
+    <script src="carrinho.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : '/api';
+
+        function trocarTab(tab) {
+            document.querySelectorAll('.area-cliente-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.area-cliente-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`.area-cliente-tab[onclick*="${tab}"]`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        async function carregarPedidos() {
+            if (!auth.estaLogado()) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/pedidos/cliente/${auth.usuario.email}`);
+                const pedidos = await response.json();
+                
+                const listaDiv = document.getElementById('pedidos-lista');
+                
+                if (pedidos.length === 0) {
+                    listaDiv.innerHTML = `
+                        <div style="text-align: center; padding: 4rem 2rem;">
+                            <h3 style="color: var(--text-dark); margin-bottom: 1rem;">Nenhum pedido encontrado</h3>
+                            <p style="color: var(--text-light); margin-bottom: 2rem;">Você ainda não realizou nenhum pedido.</p>
+                            <button class="btn-primary" onclick="window.location.href='/'">Começar a Comprar</button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                pedidos.forEach(pedido => {
+                    const data = new Date(pedido.created_at);
+                    const dataFormatada = data.toLocaleDateString('pt-BR');
+                    
+                    html += `
+                        <div class="pedido-card">
+                            <div class="pedido-header">
+                                <div class="pedido-info">
+                                    <h3>Pedido #${pedido.id}</h3>
+                                    <p>Data: ${dataFormatada}</p>
+                                </div>
+                                <span class="pedido-status status-${pedido.status}">${pedido.status}</span>
+                            </div>
+                            <div class="pedido-detalhes">
+                                <div>
+                                    <h4 style="margin-bottom: 0.5rem; color: var(--text-dark);">Produto</h4>
+                                    <ul class="pedido-produtos">
+                                        <li>
+                                            <strong>${pedido.produto}</strong>
+                                            ${pedido.modelo ? `<br><small>Modelo: ${pedido.modelo}</small>` : ''}
+                                            ${pedido.capacidade ? `<br><small>Capacidade: ${pedido.capacidade}</small>` : ''}
+                                            ${pedido.cor ? `<br><small>Cor: ${pedido.cor}</small>` : ''}
+                                        </li>
+                                    </ul>
+                                    ${pedido.cupom_usado ? `<p style="margin-top: 1rem; color: var(--text-light);"><small>Cupom: ${pedido.cupom_usado}</small></p>` : ''}
+                                    ${pedido.metodo_pagamento ? `<p style="color: var(--text-light);"><small>Pagamento: ${pedido.metodo_pagamento}</small></p>` : ''}
+                                </div>
+                                <div class="pedido-total">
+                                    ${pedido.preco !== pedido.total ? `
+                                        <div class="label">Subtotal:</div>
+                                        <div style="font-size: 1rem; color: var(--text-light); text-decoration: line-through;">R$ ${pedido.preco.toLocaleString('pt-BR')}</div>
+                                        ${pedido.desconto > 0 ? `<div class="label" style="margin-top: 0.5rem;">Desconto:</div><div style="font-size: 1rem; color: #3c3;">-R$ ${pedido.desconto.toLocaleString('pt-BR')}</div>` : ''}
+                                        ${pedido.frete > 0 ? `<div class="label" style="margin-top: 0.5rem;">Frete:</div><div style="font-size: 1rem; color: var(--text-light);">R$ ${pedido.frete.toLocaleString('pt-BR')}</div>` : ''}
+                                    ` : ''}
+                                    <div class="label" style="margin-top: 1rem;">Total:</div>
+                                    <div class="value">R$ ${pedido.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                listaDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Erro ao carregar pedidos:', error);
+                document.getElementById('pedidos-lista').innerHTML = `
+                    <p style="text-align: center; padding: 2rem; color: #c33;">Erro ao carregar pedidos. Tente novamente.</p>
+                `;
+            }
+        }
+
+        function carregarPerfil() {
+            if (!auth.estaLogado()) return;
+            
+            const usuario = auth.usuario;
+            const perfilDiv = document.getElementById('user-info-content');
+            
+            perfilDiv.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">Nome</span>
+                    <span class="info-value">${usuario.nome}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">${usuario.email}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Telefone</span>
+                    <span class="info-value">${usuario.telefone || 'Não informado'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Endereço</span>
+                    <span class="info-value">${usuario.endereco || 'Não informado'}</span>
+                </div>
+                ${usuario.cep ? `
+                <div class="info-item">
+                    <span class="info-label">CEP</span>
+                    <span class="info-value">${usuario.cep}</span>
+                </div>
+                ` : ''}
+                ${usuario.cidade ? `
+                <div class="info-item">
+                    <span class="info-label">Cidade</span>
+                    <span class="info-value">${usuario.cidade}</span>
+                </div>
+                ` : ''}
+                ${usuario.estado ? `
+                <div class="info-item">
+                    <span class="info-label">Estado</span>
+                    <span class="info-value">${usuario.estado}</span>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Verificar login ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (auth.estaLogado()) {
+                document.getElementById('nao-logado').style.display = 'none';
+                document.getElementById('area-logado').style.display = 'block';
+                carregarPedidos();
+                carregarPerfil();
+            } else {
+                document.getElementById('nao-logado').style.display = 'block';
+                document.getElementById('area-logado').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+

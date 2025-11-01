@@ -27,7 +27,19 @@
                 <li><a href="/catalogo.html?categoria=acessorios">Acessórios</a></li>
                 <li><a href="/catalogo.html?categoria=ofertas">Ofertas</a></li>
             </ul>
-            <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView()">Comprar Agora</button>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="/carrinho.html" style="position: relative; text-decoration: none; color: white; font-size: 1.5rem; padding: 0.5rem; display: flex; align-items: center;">
+                    🛒
+                    <span id="carrinho-contador" style="display: none; position: absolute; top: -5px; right: -5px; background: #ff3b30; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; font-weight: 700; align-items: center; justify-content: center;">0</span>
+                </a>
+                <a href="/login.html" id="login-link" style="text-decoration: none; color: white; padding: 0.5rem 1rem;">Entrar</a>
+                <div id="user-menu" style="display: none; align-items: center; gap: 1rem;">
+                    <span class="user-name" style="color: white;">Usuário</span>
+                    <a href="/area-cliente.html" style="text-decoration: none; color: white; padding: 0.5rem 1rem;">Área do Cliente</a>
+                    <button onclick="if(typeof auth !== 'undefined') auth.logout()" style="background: transparent; border: 1px solid white; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Sair</button>
+                </div>
+                <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView()">Comprar Agora</button>
+            </div>
             <div class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -219,8 +231,8 @@
     <section id="contato" class="contact">
         <div class="container">
             <div class="section-header">
-                <h2>Fazer Pedido</h2>
-                <p>Preencha o formulário e nossa equipe entrará em contato</p>
+                <h2>Finalizar Compra</h2>
+                <p>Complete seus dados e finalize seu pedido</p>
             </div>
             <div class="contact-content">
                 <form class="contact-form" id="orderForm">
@@ -342,6 +354,8 @@
 
     <script src="produtos.js"></script>
     <script src="mais-vendidos.js"></script>
+    <script src="carrinho.js"></script>
+    <script src="auth.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

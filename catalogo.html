@@ -239,6 +239,7 @@
     </footer>
 
     <script src="produtos.js"></script>
+    <script src="carrinho.js"></script>
     <script src="script.js"></script>
     <script>
         // Configuração do catálogo
@@ -449,10 +450,14 @@
                 <div class="catalog-product-name">${produto.nome}</div>
                 ${specs ? `<div class="catalog-product-specs">${specs}</div>` : ''}
                 <div class="catalog-product-price">R$ ${produto.preco.toLocaleString('pt-BR')}</div>
+                <button class="btn-primary" onclick="event.stopPropagation(); adicionarProdutoAoCarrinho('${produto.modelo}', '${produto.capacidade || ''}', '${produto.cor || ''}', ${produto.preco}, '${categoriaAtual}')" style="width: 100%; margin-top: 1rem;">
+                    🛒 Adicionar ao Carrinho
+                </button>
             `;
             
             card.onclick = () => {
-                selecionarProduto(produto);
+                // Não redirecionar mais ao clicar no card, só adicionar ao carrinho
+                // selecionarProduto(produto);
             };
             
             return card;
@@ -567,6 +572,28 @@
             } else {
                 // Tentar novamente após um pequeno delay
                 setTimeout(tentarInicializar, 100);
+            }
+        }
+        
+        // Função para adicionar produto ao carrinho
+        function adicionarProdutoAoCarrinho(modelo, capacidade, cor, preco, categoria) {
+            // Obter categoria original da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoriaUrl = urlParams.get('categoria') || 'iphone';
+            
+            const produto = {
+                modelo,
+                capacidade: capacidade || null,
+                cor: cor || null,
+                preco: parseFloat(preco),
+                categoria: categoriaUrl,
+                nome: `${modelo}${capacidade ? ' ' + capacidade : ''}${cor ? ' ' + cor : ''}`
+            };
+            
+            if (typeof adicionarAoCarrinho === 'function') {
+                adicionarAoCarrinho(produto);
+            } else {
+                console.error('Função adicionarAoCarrinho não está disponível');
             }
         }
         

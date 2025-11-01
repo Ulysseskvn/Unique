@@ -266,6 +266,57 @@ function calcularPrecoFinal() {
     }
 }
 
+// Funções de formatação de pagamento
+function formatarCartao(input) {
+    let valor = input.value.replace(/\D/g, '');
+    valor = valor.replace(/(\d{4})(?=\d)/g, '$1 ');
+    input.value = valor;
+}
+
+function formatarValidade(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length >= 2) {
+        valor = valor.substring(0, 2) + '/' + valor.substring(2, 4);
+    }
+    input.value = valor;
+}
+
+function mostrarCamposPagamento() {
+    const metodo = document.getElementById('metodoPagamento').value;
+    const camposCartao = document.getElementById('campos-cartao');
+    const infoPagamento = document.getElementById('info-pagamento');
+    const infoTexto = document.getElementById('info-texto');
+    
+    if (metodo === 'Cartão de Crédito') {
+        camposCartao.style.display = 'block';
+        infoPagamento.style.display = 'none';
+        
+        // Tornar campos obrigatórios
+        document.getElementById('numero-cartao').required = true;
+        document.getElementById('nome-cartao').required = true;
+        document.getElementById('validade-cartao').required = true;
+        document.getElementById('cvv-cartao').required = true;
+    } else {
+        camposCartao.style.display = 'none';
+        
+        // Remover obrigatoriedade
+        document.getElementById('numero-cartao').required = false;
+        document.getElementById('nome-cartao').required = false;
+        document.getElementById('validade-cartao').required = false;
+        document.getElementById('cvv-cartao').required = false;
+        
+        if (metodo === 'PIX') {
+            infoPagamento.style.display = 'block';
+            infoTexto.textContent = 'Ao finalizar, você receberá o código PIX para pagamento. A aprovação é instantânea.';
+        } else if (metodo === 'Boleto') {
+            infoPagamento.style.display = 'block';
+            infoTexto.textContent = 'Ao finalizar, você receberá o boleto para pagamento. O pedido será confirmado após a compensação.';
+        } else {
+            infoPagamento.style.display = 'none';
+        }
+    }
+}
+
 // Formulário de pedido - integração com backend
 const orderForm = document.getElementById('orderForm');
 if (orderForm) {
@@ -406,7 +457,7 @@ function mostrarConfirmacao(produto, pedidoId) {
             <small>Nº do pedido: #${pedidoId}</small>
         </p>
         <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1.5rem;">
-            Nossa equipe entrará em contato em breve.
+            Seu pedido foi confirmado e será processado em breve.
         </p>
         <button onclick="this.parentElement.remove()" style="
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -754,13 +805,273 @@ function verificarPreSelecaoCatalogo() {
     }
 }
 
+// Verificar se veio do carrinho (checkout)
+function verificarCheckoutCarrinho() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isCheckout = urlParams.get('checkout') === 'true';
+    
+    if (isCheckout) {
+        // Carregar itens do carrinho e mostrar resumo
+        const checkoutItens = localStorage.getItem('checkoutItens');
+        if (checkoutItens) {
+            try {
+                const itens = JSON.parse(checkoutItens);
+                if (itens.length > 0) {
+                    mostrarResumoCarrinho(itens);
+                }
+            } catch (e) {
+                console.error('Erro ao carregar itens do checkout:', e);
+            }
+        }
+    }
+}
+
+// Mostrar resumo do carrinho no formulário
+function mostrarResumoCarrinho(itens) {
+    const sectionHeader = document.querySelector('#contato .section-header');
+    if (!sectionHeader) return;
+    
+    const total = itens.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+    const quantidadeTotal = itens.reduce((sum, item) => sum + item.quantidade, 0);
+    
+    // Criar elemento de resumo
+    const resumoDiv = document.createElement('div');
+    resumoDiv.id = 'resumo-carrinho';
+    resumoDiv.style.cssText = `
+        background: var(--bg-white);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-md);
+    `;
+    
+    let resumoHTML = `
+        <h3 style="margin-bottom: 1rem; color: var(--text-dark);">Resumo do Pedido (${quantidadeTotal} ${quantidadeTotal === 1 ? 'item' : 'itens'})</h3>
+        <div style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+    `;
+    
+    itens.forEach((item, index) => {
+        const subtotal = item.preco * item.quantidade;
+        resumoHTML += `
+            <div style="padding: 0.75rem 0; border-bottom: ${index < itens.length - 1 ? '1px solid var(--border-color)' : 'none'};">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <strong style="color: var(--text-dark);">${item.nome}</strong>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            ${item.capacidade ? `Capacidade: ${item.capacidade}` : ''}
+                            ${item.cor ? (item.capacidade ? ' • ' : '') + `Cor: ${item.cor}` : ''}
+                            ${item.quantidade > 1 ? ` • Quantidade: ${item.quantidade}` : ''}
+                        </div>
+                    </div>
+                    <strong style="color: var(--primary-color); margin-left: 1rem;">R$ ${subtotal.toLocaleString('pt-BR')}</strong>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Carregar dados extras do checkout
+    const checkoutData = JSON.parse(localStorage.getItem('checkoutData') || '{}');
+    const cupom = checkoutData.cupom || null;
+    const frete = checkoutData.frete || 0;
+    
+    // Calcular desconto
+    let desconto = 0;
+    if (cupom) {
+        if (cupom.tipo === 'percentual') {
+            desconto = total * (cupom.valor / 100);
+        } else {
+            desconto = cupom.valor;
+        }
+    }
+    
+    const totalFinal = total - desconto + frete;
+    
+    resumoHTML += `
+        ${desconto > 0 ? `
+        <div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <span style="color: var(--text-light);">Desconto (${cupom ? cupom.codigo : ''}):</span>
+            <span style="color: #3c3; font-weight: 600;">-R$ ${desconto.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+        </div>
+        ` : ''}
+        ${frete > 0 ? `
+        <div style="display: flex; justify-content: space-between; padding-top: 0.5rem;">
+            <span style="color: var(--text-light);">Frete:</span>
+            <span style="color: var(--text-dark); font-weight: 600;">R$ ${frete.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+        </div>
+        ` : ''}
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid var(--border-color);">
+            <strong style="font-size: 1.3rem; color: var(--text-dark);">Total:</strong>
+            <strong style="font-size: 1.8rem; color: var(--primary-color);">R$ ${totalFinal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>
+        </div>
+    `;
+    
+    resumoDiv.innerHTML = resumoHTML;
+    
+    // Inserir antes do formulário
+    const contactContent = document.querySelector('.contact-content');
+    if (contactContent) {
+        contactContent.insertBefore(resumoDiv, contactContent.firstChild);
+    }
+    
+    // Esconder campos de produto do formulário quando vier do carrinho
+    const tipoProduto = document.getElementById('tipoProduto');
+    if (tipoProduto) {
+        tipoProduto.closest('.form-group').style.display = 'none';
+        document.getElementById('grupoModelo').style.display = 'none';
+        document.getElementById('grupoCapacidade').style.display = 'none';
+        document.getElementById('grupoCor').style.display = 'none';
+        document.getElementById('grupoPreco').style.display = 'none';
+    }
+    
+    // Modificar o submit para processar todos os itens
+    const orderForm = document.getElementById('orderForm');
+    if (orderForm) {
+        const originalSubmit = orderForm.onsubmit;
+        orderForm.onsubmit = null;
+        
+        orderForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Processar todos os itens do carrinho
+            await processarPedidosDoCarrinho(itens, orderForm);
+        });
+    }
+}
+
+// Processar múltiplos pedidos do carrinho
+async function processarPedidosDoCarrinho(itens, form) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    
+    // Carregar dados do checkout (cupom, frete, etc)
+    const checkoutData = JSON.parse(localStorage.getItem('checkoutData') || '{}');
+    const cupom = checkoutData.cupom || null;
+    const frete = checkoutData.frete || 0;
+    const cepEntrega = checkoutData.cep || null;
+    
+    // Coletar dados do formulário
+    const formData = new FormData(form);
+    const nome = formData.get('nome') || form.querySelector('input[name="nome"]')?.value;
+    const email = formData.get('email') || form.querySelector('input[name="email"]')?.value;
+    const telefone = formData.get('telefone') || form.querySelector('input[name="telefone"]')?.value;
+    const endereco = formData.get('endereco') || form.querySelector('textarea[name="endereco"]')?.value;
+    const metodo_pagamento = formData.get('metodo_pagamento') || form.querySelector('select[name="metodo_pagamento"]')?.value;
+    const mensagem = formData.get('mensagem') || form.querySelector('textarea[name="mensagem"]')?.value;
+    
+    if (!nome || !email || !telefone || !endereco) {
+        alert('Por favor, preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    submitButton.textContent = 'Processando Pedidos...';
+    submitButton.disabled = true;
+    
+    try {
+        const pedidosIds = [];
+        
+        // Calcular desconto total
+        let descontoTotal = 0;
+        if (cupom) {
+            const subtotal = itens.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            if (cupom.tipo === 'percentual') {
+                descontoTotal = subtotal * (cupom.valor / 100);
+            } else {
+                descontoTotal = cupom.valor;
+            }
+        }
+        
+        // Calcular desconto por item (proporcional)
+        const subtotal = itens.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+        const descontoPorItem = descontoTotal / subtotal;
+        
+        // Calcular frete por item (proporcional)
+        const fretePorItem = frete / itens.length;
+        
+        // Criar um pedido para cada item do carrinho
+        for (const item of itens) {
+            const itemSubtotal = item.preco * item.quantidade;
+            const itemDesconto = itemSubtotal * descontoPorItem;
+            const itemFrete = fretePorItem;
+            const itemTotal = itemSubtotal - itemDesconto + itemFrete;
+            
+            for (let i = 0; i < item.quantidade; i++) {
+                // Dividir desconto e frete proporcionalmente por quantidade
+                const descontoUnitario = itemDesconto / item.quantidade;
+                const freteUnitario = itemFrete / item.quantidade;
+                const totalUnitario = item.preco - descontoUnitario + freteUnitario;
+                
+                const response = await fetch(`${API_URL}/pedidos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome,
+                        email,
+                        telefone,
+                        endereco,
+                        produto: item.nome,
+                        modelo: item.modelo || null,
+                        capacidade: item.capacidade || null,
+                        cor: item.cor || null,
+                        preco: item.preco,
+                        desconto: descontoUnitario,
+                        frete: freteUnitario,
+                        total: totalUnitario,
+                        metodo_pagamento: metodo_pagamento || null,
+                        mensagem: mensagem || null,
+                        cupom_usado: cupom ? cupom.codigo : null,
+                        cep_entrega: cepEntrega,
+                        status_pagamento: 'pendente'
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    pedidosIds.push(data.id);
+                }
+            }
+        }
+        
+        // Sucesso - limpar carrinho e dados
+        if (typeof carrinho !== 'undefined') {
+            carrinho.limpar();
+        }
+        localStorage.removeItem('checkoutItens');
+        localStorage.removeItem('checkoutData');
+        
+        submitButton.textContent = '✓ Pedidos Confirmados!';
+        submitButton.style.background = 'linear-gradient(135deg, #34c759, #30d158)';
+        
+        mostrarConfirmacao(`${itens.length} ${itens.length === 1 ? 'produto' : 'produtos'}`, pedidosIds[0]);
+        
+        form.reset();
+        
+        setTimeout(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            submitButton.style.background = '';
+            window.location.href = '/';
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Erro ao processar pedidos:', error);
+        alert(`Erro ao processar pedidos: ${error.message}`);
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+    }
+}
+
 // Executar quando a página carregar
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         verificarPreSelecaoCatalogo();
+        verificarCheckoutCarrinho();
     });
 } else {
     verificarPreSelecaoCatalogo();
+    verificarCheckoutCarrinho();
 }
 
 console.log('🍎 Unique Importados carregada com sucesso!');
