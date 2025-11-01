@@ -367,11 +367,63 @@ if (orderForm) {
         const mensagem = textareas[1]?.value || '';
         const metodo_pagamento = formData.get('metodo_pagamento') || orderForm.querySelector('select[name="metodo_pagamento"]')?.value || '';
         
+        // Validar campos do cartão se necessário
+        if (metodo_pagamento === 'Cartão de Crédito') {
+            const numeroCartao = document.getElementById('numero-cartao')?.value.replace(/\s/g, '');
+            const nomeCartao = document.getElementById('nome-cartao')?.value;
+            const validadeCartao = document.getElementById('validade-cartao')?.value;
+            const cvvCartao = document.getElementById('cvv-cartao')?.value;
+            
+            if (!numeroCartao || numeroCartao.length < 13 || !nomeCartao || !validadeCartao || !cvvCartao) {
+                alert('Por favor, preencha todos os dados do cartão!');
+                return;
+            }
+        }
+        
         // Desabilitar botão
-        submitButton.textContent = 'Enviando Pedido...';
+        submitButton.textContent = 'Processando Pagamento...';
         submitButton.disabled = true;
         
         try {
+            // Processar pagamento se necessário (antes de criar pedido)
+            let resultadoPagamento = null;
+            if (metodo_pagamento && typeof pagamento !== 'undefined') {
+                if (metodo_pagamento === 'Cartão de Crédito') {
+                    const numeroCartao = document.getElementById('numero-cartao')?.value.replace(/\s/g, '');
+                    const nomeCartao = document.getElementById('nome-cartao')?.value;
+                    const validadeCartao = document.getElementById('validade-cartao')?.value;
+                    const cvvCartao = document.getElementById('cvv-cartao')?.value;
+                    const parcelas = document.getElementById('parcelas-cartao')?.value || 1;
+                    
+                    resultadoPagamento = await pagamento.processarPagamento({
+                        metodo: metodo_pagamento,
+                        valor: preco,
+                        numero: numeroCartao,
+                        nome: nomeCartao,
+                        cvv: cvvCartao,
+                        validade: validadeCartao,
+                        parcelas: parcelas,
+                        dadosCliente: { nome, email }
+                    });
+                    
+                    if (!resultadoPagamento.sucesso) {
+                        throw new Error(resultadoPagamento.erro || 'Pagamento não aprovado');
+                    }
+                } else if (metodo_pagamento === 'PIX') {
+                    resultadoPagamento = await pagamento.processarPagamento({
+                        metodo: 'PIX',
+                        valor: preco,
+                        pedidoId: null
+                    });
+                } else if (metodo_pagamento === 'Boleto') {
+                    resultadoPagamento = await pagamento.processarPagamento({
+                        metodo: 'Boleto',
+                        valor: preco,
+                        pedidoId: null
+                    });
+                }
+            }
+            
             // Enviar pedido para o backend
             const response = await fetch(`${API_URL}/pedidos`, {
                 method: 'POST',
@@ -389,7 +441,8 @@ if (orderForm) {
                     cor: cor || null,
                     preco,
                     metodo_pagamento,
-                    mensagem: mensagem || null
+                    mensagem: mensagem || null,
+                    status_pagamento: resultadoPagamento?.sucesso ? (metodo_pagamento === 'PIX' ? 'pago' : 'processando') : 'pendente'
                 })
             });
             
@@ -397,6 +450,13 @@ if (orderForm) {
             
             if (!response.ok) {
                 throw new Error(data.error || 'Erro ao enviar pedido');
+            }
+            
+            // Mostrar informações de pagamento se aplicável
+            if (resultadoPagamento && metodo_pagamento === 'PIX') {
+                mostrarInfoPIX(resultadoPagamento, data.id);
+            } else if (resultadoPagamento && metodo_pagamento === 'Boleto') {
+                mostrarInfoBoleto(resultadoPagamento, data.id);
             }
             
             // Sucesso
@@ -408,6 +468,8 @@ if (orderForm) {
             
             // Resetar formulário
             orderForm.reset();
+            document.getElementById('campos-cartao').style.display = 'none';
+            document.getElementById('info-pagamento').style.display = 'none';
             
             // Resetar botão após 5 segundos
             setTimeout(() => {
