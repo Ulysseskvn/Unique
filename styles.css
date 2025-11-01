@@ -59,7 +59,7 @@ body {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 3.5rem;
 }
 
 .nav-menu a {
